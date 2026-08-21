@@ -8,17 +8,20 @@ import ChamadaLead from './ChamadaLead.astro';
 import ChamadaLateral from './ChamadaLateral.astro';
 import CartaoMateria from './CartaoMateria.astro';
 import CaixaDestaque from './CaixaDestaque.astro';
+import RetratoEditor from './RetratoEditor.astro';
+import { SITE } from '../config';
 import { rotas } from '../lib/url';
 import { numeroEdicao } from '../lib/datas';
-import type { CapaMontada } from '../lib/conteudo';
+import type { CapaMontada, Materia } from '../lib/conteudo';
 
 interface Props {
   capa: CapaMontada;
-  /** Há editorial publicado nesta edição? */
-  temEditorial?: boolean;
+  /** Editorial da edição, quando houver — ganha chamada própria com retrato. */
+  editorial?: Materia;
 }
 
-const { capa, temEditorial = false } = Astro.props;
+const { capa, editorial } = Astro.props;
+const tituloEditorial = editorial?.data.titulo ?? '';
 const { edicao, manchete, laterais, linhaInferior } = capa;
 const destaque = edicao.data.destaqueLateral;
 const caminhoEdicao = rotas.edicao(edicao.data.numero);
@@ -54,14 +57,16 @@ const lateralComDeck = laterais.length <= 3;
       }
 
       {
-        temEditorial && (
-          <div class="item-lateral">
-            <p class="kicker kicker-editorial">Opinião · Editorial</p>
-            <p class="link-editorial">
-              <a href={rotas.editorial(edicao.data.numero)}>
-                Por que escolhemos as boas notícias
-              </a>
-            </p>
+        editorial && (
+          <div class="item-lateral bloco-editorial">
+            <RetratoEditor tamanho={78} />
+            <div class="texto-editorial">
+              <p class="kicker kicker-editorial">Opinião · Editorial</p>
+              <p class="link-editorial">
+                <a href={rotas.editorial(edicao.data.numero)}>{tituloEditorial}</a>
+              </p>
+              <p class="assina-editorial">Por {SITE.autorPadrao}</p>
+            </div>
           </div>
         )
       }
@@ -112,10 +117,29 @@ const lateralComDeck = laterais.length <= 3;
     padding-top: 0;
   }
 
+  /* O editorial ganha o retrato do editor ao lado — é o convite ao clique. */
+  .bloco-editorial {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .texto-editorial {
+    min-width: 0;
+  }
+
   .kicker-editorial {
     font-size: 0.59375rem;
     letter-spacing: 0.26em;
     margin-bottom: 6px;
+  }
+
+  .assina-editorial {
+    margin-top: 6px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: var(--t-rotulo);
+    color: var(--cinza-rotulo);
   }
 
   .link-editorial {

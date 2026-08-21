@@ -46,7 +46,8 @@ const materias = defineCollection({
             legenda: z.string().min(5),
             credito: z.string().min(2),
             licenca: z.string().min(2),
-            fonteUrl: z.url(),
+            /** Página de origem. Só falta em foto própria, feita pela redação. */
+            fonteUrl: z.url().optional(),
           })
           .optional(),
         fontes: z.array(fonte).default([]),

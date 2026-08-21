@@ -34,13 +34,22 @@ npm run foto "termo de busca"                      # lista com as licenças
 npm run foto "termo" -- --baixar=<slug> --indice=N # baixa a escolhida
 ```
 
-O script recusa sozinho NC e ND. Escolha uma foto que **retrate o assunto** — foto genérica
-bonita da cidade não serve para ilustrar um fato específico. Sem foto adequada, omita o
-campo `foto`: o placeholder da marca entra no lugar.
+O script recusa sozinho NC e ND. Escolha uma foto que **retrate o assunto**:
 
-Ao preencher, **reescreva** `alt` e `legenda` com base no conteúdo real da matéria (o script
-só sugere a partir da descrição do Commons). O `alt` descreve a imagem para quem não a vê;
-a legenda diz o que a cena tem a ver com a matéria.
+- Foto genérica bonita da cidade **não** ilustra um fato específico.
+- Foto de outro estado **nunca** ilustra matéria capixaba, por mais parecido que seja o tema.
+- Sem foto adequada, omita o campo `foto`. O placeholder da marca é honesto; foto errada não.
+
+Ao preencher, **reescreva sempre** `alt` e `legenda` — o script só sugere a partir da
+descrição do Commons, quase sempre em inglês e fora de contexto:
+
+- `alt`: descreva **o que se vê** na imagem, em português, para quem não a enxerga. Não
+  repita o título da matéria.
+- `legenda`: diga o que a cena tem a ver com esta matéria. Se a foto for um local e não o
+  fato, deixe isso claro ("O centro de Marataízes; o mutirão percorre as comunidades do
+  interior") — nunca dê a entender que a imagem mostra o acontecimento.
+- `credito`, `licenca` e `fonteUrl` vão preenchidos como o script devolveu. Eles aparecem
+  sob a foto em **toda** aparição dela no site — é o que as licenças CC BY e CC BY-SA exigem.
 
 ### 4. Criar o arquivo
 

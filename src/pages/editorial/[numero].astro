@@ -7,6 +7,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeaderCompacto from '../../components/HeaderCompacto.astro';
 import BadgeRascunho from '../../components/BadgeRascunho.astro';
+import RetratoEditor from '../../components/RetratoEditor.astro';
 import { EXPEDIENTE, SITE } from '../../config';
 import {
   getEdicoes,
@@ -98,12 +99,16 @@ const jsonLd = [
           </div>
 
           <div class="assinatura">
-            <p class="conselho">Conselho Editorial</p>
-            <p class="rotulo">
-              {SITE.cidadeSede}, {mesAno(edicao.data.dataFechamento)} · Edição Nº {
-                numeroEdicao(edicao.data.numero)
-              }
-            </p>
+            <RetratoEditor tamanho={96} decorativo={false} />
+            <div>
+              <p class="conselho">{SITE.autorPadrao}</p>
+              <p class="rotulo">Direção editorial</p>
+              <p class="rotulo local">
+                {SITE.cidadeSede}, {mesAno(edicao.data.dataFechamento)} · Edição Nº {
+                  numeroEdicao(edicao.data.numero)
+                }
+              </p>
+            </div>
           </div>
         </article>
 
@@ -198,9 +203,10 @@ const jsonLd = [
 
   .assinatura {
     display: flex;
-    flex-direction: column;
-    gap: 3px;
-    padding-top: 6px;
+    align-items: flex-start;
+    gap: 18px;
+    padding-top: 10px;
+    border-top: var(--fio-fino) solid var(--fio);
   }
 
   .conselho {
@@ -209,6 +215,10 @@ const jsonLd = [
     font-weight: 700;
     font-size: 1.25rem;
     color: var(--azul);
+  }
+
+  .local {
+    margin-top: 4px;
   }
 
   .lateral {

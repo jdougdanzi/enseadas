@@ -1,0 +1,161 @@
+---
+/**
+ * Contato: sugerir pauta, mandar carta, pedir correção. Um caminho por assunto,
+ * para a mensagem chegar já endereçada.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { SITE } from '../config';
+import { edicaoCorrente } from '../lib/conteudo';
+import { trilha } from '../lib/seo';
+
+const edicao = await edicaoCorrente();
+const descricao = `Como falar com a redação da ${SITE.nome}: sugerir pauta, mandar carta ou pedir correção.`;
+
+const canais = [
+  {
+    titulo: 'Sugerir uma pauta',
+    email: SITE.emailRedacao,
+    assunto: 'Sugestão de pauta',
+    texto:
+      'Conhece uma boa história capixaba? Conte em poucas linhas o que aconteceu, em que município, e mande junto qualquer link, foto ou contato de quem viveu a história. Quanto mais concreto, maior a chance de virar matéria.',
+  },
+  {
+    titulo: 'Mandar uma carta',
+    email: SITE.emailCartas,
+    assunto: 'Carta para a redação',
+    texto:
+      'Leu algo que te tocou, discordou de um texto, quer completar uma informação? As cartas selecionadas saem na página de editorial da próxima edição, com o primeiro nome e a cidade de quem escreveu.',
+  },
+  {
+    titulo: 'Pedir uma correção',
+    email: SITE.emailRedacao,
+    assunto: 'Correção',
+    texto:
+      'Errou-se um nome, uma data, um número? Diga qual matéria e o que está errado. A correção é feita no próprio texto e sinalizada ao pé da página. Não escondemos erro.',
+  },
+  {
+    titulo: 'Fotografia',
+    email: SITE.emailRedacao,
+    assunto: 'Fotografia',
+    texto:
+      'Fotógrafo capixaba que queira ceder imagens, ou autor que identificou uma foto sua usada aqui e quer ajustar o crédito: escreva. Toda imagem publicada leva autor e licença na legenda.',
+  },
+];
+---
+
+<BaseLayout
+  titulo="Contato"
+  descricao={descricao}
+  caminho="/contato"
+  jsonLd={[
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Contato', caminho: '/contato' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Fale com a redação</h1>
+        <p class="deck">
+          Somos uma redação pequena e lemos tudo. Escolha o caminho que mais se
+          aproxima do seu assunto — a resposta sai mais rápido.
+        </p>
+      </header>
+
+      <div class="canais">
+        {
+          canais.map((canal) => (
+            <section class="canal">
+              <h2>{canal.titulo}</h2>
+              <p>{canal.texto}</p>
+              <a
+                class="endereco"
+                href={`mailto:${canal.email}?subject=${encodeURIComponent(canal.assunto)}`}
+              >
+                {canal.email}
+              </a>
+            </section>
+          ))
+        }
+      </div>
+
+      <p class="rodape-contato">
+        A EnseadaS é feita em {SITE.cidadeSede}, Espírito Santo. Não temos telefone
+        de redação: tudo passa por e-mail, para ficar registrado.
+      </p>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--max-manchete);
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .canais {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px var(--calha);
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding-top: 28px;
+  }
+
+  .canal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: var(--fio-grosso) solid var(--tinta);
+    padding-top: 16px;
+  }
+
+  .canal h2 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+
+  .canal p {
+    font-family: var(--serif-texto);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .endereco {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    margin-top: auto;
+    padding-top: 6px;
+  }
+
+  .rodape-contato {
+    margin-top: 34px;
+    padding-top: 18px;
+    border-top: var(--fio-fino) solid var(--fio);
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--cinza-rotulo);
+    max-width: 60ch;
+  }
+</style>

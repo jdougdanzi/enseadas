@@ -3,7 +3,7 @@ titulo: Prêmio do café cria categoria só para mulheres
 linhaFina: Com R$ 200 mil em premiação, o concurso estadual abre pela primeira vez uma disputa exclusiva para as mais de 900 produtoras do projeto Mulheres do Café.
 tipo: materia
 caderno: sabores
-cidade: Venda Nova do Imigrante
+cidade: Vitória
 tags: [Café, Cafeicultura, Mulheres do Café, Conilon]
 data: '2026-08-21'
 edicao: 1

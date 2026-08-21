@@ -39,10 +39,19 @@ const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
     />
   </div>
 
-  <div class="fio-tinta">
+</header>
+
+<!-- Sentinela: quando ela sai de vista, a barra de cadernos está grudada no topo. -->
+<div class="sentinela" aria-hidden="true"></div>
+
+<div class="fio-tinta barra-nav" data-barra-nav>
+  <div class="barra-conteudo">
+    <div class="marca-compacta">
+      <Logo tamanho="26px" />
+    </div>
     <NavCadernos ativo={ativo} />
   </div>
-</header>
+</div>
 
 <style>
   .masthead {
@@ -69,6 +78,69 @@ const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
     padding: 22px 0;
   }
 
+  /* 1px, e não zero: o IntersectionObserver ignora elemento sem área e a
+     assinatura reduzida nunca apareceria. */
+  .sentinela {
+    height: 1px;
+    margin-bottom: -1px;
+  }
+
+  /* A barra de cadernos gruda no topo ao rolar. Ela é irmã do masthead — e não
+     filha — porque `position: sticky` só funciona dentro dos limites do pai:
+     dentro do <header> ela pararia de grudar assim que o masthead saísse. */
+  .barra-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--papel);
+    border-bottom: var(--fio-fino) solid transparent;
+    transition: border-color 0.2s ease;
+  }
+
+  .barra-nav[data-fixa] {
+    border-bottom-color: var(--fio);
+  }
+
+  /* 1fr auto 1fr mantém a nav centrada, com ou sem a assinatura ao lado. */
+  .barra-conteudo {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .marca-compacta {
+    justify-self: start;
+    overflow: hidden;
+    max-width: 0;
+    opacity: 0;
+    transition:
+      max-width 0.3s ease,
+      opacity 0.22s ease;
+  }
+
+  .barra-nav[data-fixa] .marca-compacta {
+    max-width: 220px;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marca-compacta,
+    .barra-nav {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 860px) {
+    /* No celular a nav precisa da largura inteira para rolar na horizontal. */
+    .barra-conteudo {
+      grid-template-columns: 1fr;
+    }
+
+    .marca-compacta {
+      display: none;
+    }
+  }
+
   @media (max-width: 720px) {
     .linha-topo {
       font-size: 0.5rem;
@@ -80,3 +152,18 @@ const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // Sem JS a barra continua grudando: isto só liga a assinatura reduzida.
+  const sentinela = document.querySelector('.sentinela');
+  const barra = document.querySelector('[data-barra-nav]');
+
+  if (sentinela && barra && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      ([entrada]) => {
+        barra.toggleAttribute('data-fixa', !entrada.isIntersecting);
+      },
+      { threshold: 0 },
+    ).observe(sentinela);
+  }
+</script>

@@ -41,19 +41,30 @@ const ano = new Date().getFullYear();
         <p class="titulo-coluna">A revista</p>
         <ul>
           <li><a href={rotas.arquivo()}>Edições anteriores</a></li>
+          <li><a href={rotas.assuntos()}>Assuntos</a></li>
           <li><a href={rotas.expediente()}>Expediente</a></li>
           <li><a href={rotas.privacidade()}>Privacidade</a></li>
           <li><a href={rotas.feed()}>Assinar o RSS</a></li>
         </ul>
       </nav>
 
-      <div class="coluna">
+      <nav class="coluna" aria-label="Fale com a redação">
         <p class="titulo-coluna">Fale com a redação</p>
         <ul>
-          <li><a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a></li>
-          <li><a href={`mailto:${SITE.emailCartas}`}>{SITE.emailCartas}</a></li>
+          <li><a href={rotas.contato()}>Sugerir uma pauta</a></li>
+          <li>
+            <a href={`mailto:${SITE.emailCartas}?subject=${encodeURIComponent('Carta para a redação')}`}>
+              Mandar uma carta
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${SITE.emailRedacao}?subject=${encodeURIComponent('Correção')}`}>
+              Pedir uma correção
+            </a>
+          </li>
+          <li><a href={rotas.contato()}>Todos os contatos</a></li>
         </ul>
-      </div>
+      </nav>
     </div>
 
     <div class="fio-tinta creditos">

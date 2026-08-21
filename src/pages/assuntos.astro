@@ -1,0 +1,124 @@
+---
+/**
+ * Índice de assuntos — a porta de entrada lateral do site, para quem chega
+ * procurando um tema em vez de uma edição.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { edicaoCorrente } from '../lib/conteudo';
+import { getAssuntos } from '../lib/assuntos';
+import { rotas } from '../lib/url';
+import { colecao, trilha } from '../lib/seo';
+
+const assuntos = await getAssuntos();
+const edicao = await edicaoCorrente();
+const descricao =
+  'Todos os assuntos cobertos pela EnseadaS, do mais ao menos frequente.';
+---
+
+<BaseLayout
+  titulo="Assuntos"
+  descricao={descricao}
+  caminho="/assuntos"
+  jsonLd={[
+    colecao('Assuntos — EnseadaS', descricao, '/assuntos'),
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Assuntos', caminho: '/assuntos' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Assuntos</h1>
+        <p class="deck">
+          Os temas que a revista já cobriu, do mais frequente ao mais raro.
+        </p>
+      </header>
+
+      {
+        assuntos.length > 0 ? (
+          <ul class="lista">
+            {assuntos.map((a) => (
+              <li>
+                <a href={rotas.assunto(a.slug)}>
+                  <span class="rotulo">{a.rotulo}</span>
+                  <span class="contagem">{a.materias.length}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="vazio">Ainda não há assuntos publicados.</p>
+        )
+      }
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0 var(--calha);
+    border-top: var(--fio-grosso) solid var(--tinta);
+  }
+
+  .lista a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: var(--fio-fino) solid var(--fio);
+    color: var(--tinta);
+  }
+
+  .lista a:hover,
+  .lista a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .rotulo {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: 1.0625rem;
+  }
+
+  .contagem {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    color: var(--cinza-rotulo);
+  }
+
+  .vazio {
+    border-top: var(--fio-fino) solid var(--fio);
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--serif-texto);
+    font-style: italic;
+    color: var(--cinza-rotulo);
+  }
+</style>

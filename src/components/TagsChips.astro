@@ -2,6 +2,9 @@
 /**
  * Chips de assunto ao fim da matéria, em azul-papel.
  */
+import { slugAssunto } from '../lib/assuntos';
+import { rotas } from '../lib/url';
+
 interface Props {
   tags: string[];
 }
@@ -13,7 +16,11 @@ const { tags } = Astro.props;
   tags.length > 0 && (
     <ul class="tags" aria-label="Assuntos">
       {tags.map((tag) => (
-        <li class="chip">{tag}</li>
+        <li>
+          <a class="chip" href={rotas.assunto(slugAssunto(tag))}>
+            {tag}
+          </a>
+        </li>
       ))}
     </ul>
   )

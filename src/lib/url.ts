@@ -55,8 +55,11 @@ export const rotas = {
   caderno: (slug: string) => href(`/caderno/${slug}`),
   edicao: (numero: number) => href(`/edicao/${String(numero).padStart(3, '0')}`),
   editorial: (numero: number) => href(`/editorial/${String(numero).padStart(3, '0')}`),
+  assunto: (slug: string) => href(`/assunto/${slug}`),
+  assuntos: () => href('/assuntos'),
   arquivo: () => href('/arquivo'),
   expediente: () => href('/expediente'),
+  contato: () => href('/contato'),
   privacidade: () => href('/privacidade'),
   feed: () => href('/feed.xml'),
 } as const;

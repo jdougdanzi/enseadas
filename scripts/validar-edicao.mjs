@@ -227,7 +227,7 @@ async function main() {
     }
 
     if (m.foto) {
-      for (const campo of ['src', 'alt', 'legenda', 'credito', 'licenca', 'fonteUrl']) {
+      for (const campo of ['src', 'alt', 'legenda', 'credito', 'licenca']) {
         if (!m.foto[campo]) erro(`${rotulo}: foto sem "${campo}".`);
       }
       if (/\bNC\b|\bND\b/i.test(String(m.foto.licenca ?? ''))) {

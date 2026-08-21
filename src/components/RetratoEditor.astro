@@ -1,0 +1,57 @@
+---
+/**
+ * Retrato do editor em preto e branco, à moda de coluna assinada de jornal.
+ * Não renderiza nada enquanto não houver arquivo em src/assets/retratos/.
+ */
+import { Image } from 'astro:assets';
+import { retratoEditor } from '../lib/retrato';
+import { SITE } from '../config';
+
+interface Props {
+  /** Lado do quadrado, em px. */
+  tamanho?: number;
+  /** Decorativo (quando o nome já está escrito ao lado) ou informativo. */
+  decorativo?: boolean;
+}
+
+const { tamanho = 72, decorativo = true } = Astro.props;
+---
+
+{
+  retratoEditor && (
+    <div
+      class="retrato"
+      style={`--retrato-lado:${tamanho}px`}
+      aria-hidden={decorativo ? 'true' : undefined}
+    >
+      <Image
+        src={retratoEditor}
+        alt={decorativo ? '' : `Retrato de ${SITE.autorPadrao}`}
+        widths={[tamanho, tamanho * 2]}
+        sizes={`${tamanho}px`}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )
+}
+
+<style>
+  .retrato {
+    flex: none;
+    width: var(--retrato-lado);
+    height: var(--retrato-lado);
+    overflow: hidden;
+    background: var(--azul-papel);
+    border-top: var(--fio-grosso) solid var(--azul);
+  }
+
+  .retrato :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    /* Monocromático: o retrato acompanha a página sem competir com a foto da manchete. */
+    filter: grayscale(1) contrast(1.06);
+  }
+</style>

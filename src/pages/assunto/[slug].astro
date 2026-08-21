@@ -1,0 +1,85 @@
+---
+/**
+ * Todas as matérias de um assunto. É o destino dos chips ao pé das matérias.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeaderCompacto from '../../components/HeaderCompacto.astro';
+import CartaoMateria from '../../components/CartaoMateria.astro';
+import { edicaoCorrente } from '../../lib/conteudo';
+import { getAssuntos, type Assunto } from '../../lib/assuntos';
+import { colecao, trilha } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const assuntos = await getAssuntos();
+  return assuntos.map((assunto) => ({
+    params: { slug: assunto.slug },
+    props: { assunto },
+  }));
+}
+
+interface Props {
+  assunto: Assunto;
+}
+
+const { assunto } = Astro.props;
+const edicao = await edicaoCorrente();
+const caminho = `/assunto/${assunto.slug}`;
+const total = assunto.materias.length;
+const descricao = `Tudo o que a EnseadaS publicou sobre ${assunto.rotulo} no Espírito Santo.`;
+---
+
+<BaseLayout
+  titulo={assunto.rotulo}
+  descricao={descricao}
+  caminho={caminho}
+  jsonLd={[
+    colecao(`${assunto.rotulo} — EnseadaS`, descricao, caminho),
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Assuntos', caminho: '/assuntos' },
+      { nome: assunto.rotulo, caminho },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">Assunto</p>
+        <h1 class="titulo">{assunto.rotulo}</h1>
+        <p class="deck">
+          {total === 1 ? '1 matéria publicada' : `${total} matérias publicadas`} sobre
+          este assunto.
+        </p>
+      </header>
+
+      <div class="grade">
+        {assunto.materias.map((materia) => <CartaoMateria materia={materia} comDeck />)}
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px var(--calha);
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding-top: 26px;
+  }
+</style>

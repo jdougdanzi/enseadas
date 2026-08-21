@@ -63,8 +63,17 @@ Estas não se negociam. Se uma delas conflitar com um pedido, pare e diga ao Dou
    não entra — e a matéria pode simplesmente não existir.
 2. **Toda matéria cita as fontes** no frontmatter. O build e o validador barram quem não cita.
 3. **Foto só com licença livre** (domínio público, CC0, CC BY, CC BY-SA). Nunca NC nem ND.
-   Crédito e licença são obrigatórios. Sem foto adequada, usa-se o placeholder da marca —
-   jamais uma imagem que não retrate o fato.
+   E a atribuição não é opcional:
+   - **Descreva a foto** no `alt` — o que se vê na imagem, para quem não a enxerga.
+     Não repita o título da matéria; descreva a cena.
+   - **Legenda** diz o que aquela cena tem a ver com a matéria.
+   - **Crédito + licença + link da origem** aparecem sob a foto em **todo lugar onde ela é
+     exibida** — abertura da matéria, capa, cartões, capa de caderno. CC BY e CC BY-SA exigem
+     atribuição junto da obra; crédito só na página da matéria não cumpre a licença. O
+     componente `FotoMateria` já faz isso: nunca há opção de exibir foto sem crédito.
+   - Foto que **não retrata o fato** não entra. Paisagem bonita da cidade não ilustra um
+     evento específico, e imagem de outro estado jamais ilustra matéria capixaba. Sem foto
+     adequada, entra o placeholder da marca — que é honesto.
 4. **`git push` só com o "sim" explícito do Douglas**, dentro do `/publicar`.
 5. **Aprovação é uma a uma.** Só mude `status: aprovada` quando Douglas aprovar aquela matéria.
    Nunca aprove em lote por conta própria.
@@ -179,9 +188,17 @@ No `npm run dev`, tudo aparece com selo de rascunho. Essa regra vive num lugar s
 | [src/lib/datas.ts](src/lib/datas.ts) | datas civis em pt-BR sem escorregão de fuso |
 | [src/lib/url.ts](src/lib/url.ts) | links com o base path `/enseadas` — **use sempre `rotas`/`href`/`abs`** |
 | [src/lib/seo.ts](src/lib/seo.ts) | JSON-LD (NewsArticle, Organization, breadcrumb) |
+| [src/lib/assuntos.ts](src/lib/assuntos.ts) | tags viram rotas `/assunto/<slug>/` — escreva a tag em português com acento, o slug sai sozinho |
+| [src/lib/retrato.ts](src/lib/retrato.ts) | retrato do editor no editorial (opcional; ver `src/assets/retratos/LEIA-ME.md`) |
 | [src/styles/tokens.css](src/styles/tokens.css) | cores, fontes e medidas da marca |
 | `src/components/`, `src/pages/` | componentes e rotas |
 | `scripts/` | busca de foto, validador, calendário |
+
+**Trocar a foto de uma matéria por uma sua:**
+salve o arquivo em `src/assets/fotos/<slug-da-materia>.jpg` (substituindo o que estiver lá) e
+ajuste o bloco `foto:` no markdown — `credito` com o seu nome, `licenca: 'Arquivo pessoal'` ou
+`'© Douglas Danzi'`, e `fonteUrl` apontando para onde a foto está publicada (ou remova o campo
+`fonteUrl` do bloco e do schema, se a foto for inédita). Reescreva `alt` e `legenda`.
 
 **Armadilhas conhecidas:**
 - Nunca escreva `href="/materia/x"` à mão: some o `/enseadas` e o link quebra no ar.
