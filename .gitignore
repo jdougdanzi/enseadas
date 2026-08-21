@@ -19,6 +19,7 @@ Revista Enseadas logo concepts/
 # rascunhos de trabalho da redação que não vão ao ar
 redacao/pautas/*.md
 !redacao/pautas/.gitkeep
+!redacao/pautas/README.md
 
 # cópia de trabalho da branch gh-pages (deploy)
 .gh-pages/
