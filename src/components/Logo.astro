@@ -7,8 +7,12 @@ import { SITE } from '../config';
 import { rotas } from '../lib/url';
 
 interface Props {
-  /** Lado do bloco E, em px. O resto da assinatura escala a partir dele. */
-  tamanho?: number;
+  /**
+   * Lado do bloco E: um número (px) ou qualquer medida CSS — inclusive
+   * `clamp()`, para a assinatura crescer no desktop sem estourar no celular.
+   * O resto da assinatura escala a partir dele.
+   */
+  tamanho?: number | string;
   /** Exibe a linha "DIÁRIO DE BOAS NOTÍCIAS · ES" sob o wordmark. */
   comTagline?: boolean;
   /** No masthead da capa a linha vem por extenso: "· ESPÍRITO SANTO". */
@@ -36,8 +40,10 @@ const corMarca = negativo ? 'var(--papel)' : 'var(--azul)';
 const corBlocoFundo = negativo ? 'var(--papel)' : 'var(--azul)';
 const corBlocoLetra = negativo ? 'var(--azul)' : 'var(--papel)';
 
+const lado = typeof tamanho === 'number' ? `${tamanho}px` : tamanho;
+
 const estilo = [
-  `--logo-lado:${tamanho}px`,
+  `--logo-lado:${lado}`,
   `--logo-cor:${corMarca}`,
   `--logo-bloco-fundo:${corBlocoFundo}`,
   `--logo-bloco-letra:${corBlocoLetra}`,
@@ -153,7 +159,9 @@ const Nome = comoTitulo ? 'h1' : 'span';
   .tagline-texto {
     font-family: var(--sans);
     font-weight: 600;
-    font-size: max(7.5px, calc(var(--logo-lado) * 0.175));
+    /* A linha de apoio cresce com a assinatura, mas para de crescer antes de
+       competir com o nome — ela é subordinada ao wordmark. */
+    font-size: clamp(7.5px, calc(var(--logo-lado) * 0.175), 12px);
     letter-spacing: 0.3em;
     color: var(--logo-cor);
     text-transform: uppercase;

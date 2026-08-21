@@ -30,7 +30,13 @@ const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
   <div class="fio-triplo"></div>
 
   <div class="assinatura">
-    <Logo tamanho={46} comTagline taglineCompleta comLink={false} comoTitulo={comoTitulo} />
+    <Logo
+      tamanho="clamp(48px, 8.8vw, 116px)"
+      comTagline
+      taglineCompleta
+      comLink={false}
+      comoTitulo={comoTitulo}
+    />
   </div>
 
   <div class="fio-tinta">
@@ -71,12 +77,6 @@ const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
 
     .assinatura {
       padding: 18px 0;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .assinatura :global(.logo) {
-      --logo-lado: 38px;
     }
   }
 </style>
