@@ -12,7 +12,7 @@ import TagsChips from '../../components/TagsChips.astro';
 import ListaFontes from '../../components/ListaFontes.astro';
 import LeiaTambem from '../../components/LeiaTambem.astro';
 import BadgeRascunho from '../../components/BadgeRascunho.astro';
-import CaixaDestaque from '../../components/CaixaDestaque.astro';
+import BarraLeitor from '../../components/BarraLeitor.astro';
 import {
   getMaterias,
   getRelacionadas,
@@ -148,12 +148,7 @@ const jsonLd = [
 
         <ListaFontes fontes={materia.data.fontes} />
 
-        <div class="compartilhar">
-          <CaixaDestaque
-            caminhoCompartilhar={caminho}
-            tituloCompartilhar={materia.data.titulo}
-          />
-        </div>
+        <BarraLeitor titulo={materia.data.titulo} caminho={caminho} />
       </article>
 
       <LeiaTambem materias={relacionadas} />
@@ -201,10 +196,6 @@ const jsonLd = [
     margin: 26px auto 0;
   }
 
-  .compartilhar {
-    max-width: var(--max-corpo);
-    margin: 26px auto 0;
-  }
 
   @media (max-width: 720px) {
     .cabeca {

@@ -60,6 +60,7 @@ export const rotas = {
   arquivo: () => href('/arquivo'),
   expediente: () => href('/expediente'),
   contato: () => href('/contato'),
+  salvos: () => href('/salvos'),
   privacidade: () => href('/privacidade'),
   feed: () => href('/feed.xml'),
 } as const;

@@ -39,6 +39,13 @@ svg {
   display: block;
 }
 
+/* O atributo `hidden` vale só como `display:none` do navegador — qualquer
+   regra de `display` nossa venceria. Sem isto, elemento marcado como oculto
+   continua na tela (foi o que aconteceu com o botão de compartilhar). */
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3,

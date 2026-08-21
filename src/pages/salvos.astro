@@ -1,0 +1,193 @@
+---
+/**
+ * Matérias que o leitor salvou para ler depois.
+ *
+ * A lista mora no navegador (localStorage) — o site é estático e não guarda
+ * nada sobre ninguém. Por isso a página é montada no cliente, e diz isso ao
+ * leitor em vez de fingir que existe uma conta.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { edicaoCorrente } from '../lib/conteudo';
+import { trilha } from '../lib/seo';
+
+const edicao = await edicaoCorrente();
+const descricao = 'As matérias da EnseadaS que você guardou para ler depois.';
+---
+
+<BaseLayout
+  titulo="Salvos"
+  descricao={descricao}
+  caminho="/salvos"
+  semIndexacao
+  jsonLd={[
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Salvos', caminho: '/salvos' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Salvos para ler depois</h1>
+        <p class="deck">
+          Sua lista fica guardada neste navegador, e só nele. Não temos cadastro
+          nem servidor: nada aqui é enviado para a redação.
+        </p>
+      </header>
+
+      <div id="lista-salvos" class="area">
+        <p class="carregando">Lendo a sua lista…</p>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--max-manchete);
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .area {
+    border-top: var(--fio-grosso) solid var(--tinta);
+    max-width: var(--max-foto);
+  }
+
+  .carregando,
+  .area :global(.vazio) {
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--serif-texto);
+    font-style: italic;
+    color: var(--cinza-rotulo);
+  }
+
+  .area :global(ol) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .area :global(li) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: var(--fio-fino) solid var(--fio);
+  }
+
+  .area :global(li a) {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-3);
+    line-height: 1.3;
+    color: var(--tinta);
+  }
+
+  .area :global(li a:hover),
+  .area :global(li a:focus-visible) {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .area :global(button) {
+    flex: none;
+    border: var(--fio-fino) solid var(--fio);
+    background: var(--papel);
+    color: var(--cinza-rotulo);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+
+  .area :global(button:hover),
+  .area :global(button:focus-visible) {
+    border-color: var(--azul);
+    color: var(--azul);
+  }
+</style>
+
+<script>
+  const CHAVE = 'enseadas:salvos';
+
+  type Salvo = { url: string; titulo: string; salvoEm: string };
+
+  function lerSalvos(): Salvo[] {
+    try {
+      const bruto = localStorage.getItem(CHAVE);
+      const dados = bruto ? JSON.parse(bruto) : [];
+      return Array.isArray(dados) ? dados : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function gravarSalvos(lista: Salvo[]) {
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(lista));
+    } catch {
+      /* modo privado: a remoção não persiste */
+    }
+  }
+
+  function desenhar() {
+    const area = document.getElementById('lista-salvos');
+    if (!area) return;
+
+    const lista = lerSalvos();
+    area.textContent = '';
+
+    if (lista.length === 0) {
+      const vazio = document.createElement('p');
+      vazio.className = 'vazio';
+      vazio.textContent =
+        'Você ainda não salvou nenhuma matéria. Use o marcador ao pé de qualquer texto.';
+      area.append(vazio);
+      return;
+    }
+
+    const ol = document.createElement('ol');
+
+    for (const item of lista) {
+      const li = document.createElement('li');
+
+      const link = document.createElement('a');
+      link.href = item.url;
+      link.textContent = item.titulo;
+
+      const remover = document.createElement('button');
+      remover.type = 'button';
+      remover.textContent = 'Remover';
+      remover.addEventListener('click', () => {
+        gravarSalvos(lerSalvos().filter((s) => s.url !== item.url));
+        desenhar();
+      });
+
+      li.append(link, remover);
+      ol.append(li);
+    }
+
+    area.append(ol);
+  }
+
+  desenhar();
+</script>
