@@ -40,7 +40,8 @@ const { tamanho = 72, decorativo = true } = Astro.props;
   .retrato {
     flex: none;
     width: var(--retrato-lado);
-    height: var(--retrato-lado);
+    /* O fio de cima soma à altura para a imagem ficar quadrada de verdade. */
+    height: calc(var(--retrato-lado) + var(--fio-grosso));
     overflow: hidden;
     background: var(--azul-papel);
     border-top: var(--fio-grosso) solid var(--azul);
