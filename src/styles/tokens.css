@@ -13,7 +13,9 @@
   --fio: #d9dbe3; /* hairlines e bordas */
   --fio-claro: #edeef2; /* divisores internos mais leves */
   --cinza-texto: #3c4048; /* decks e legendas escuras */
-  --cinza-rotulo: #7a8090; /* rótulos, bylines secundárias */
+  /* Rótulos e bylines. O manual sugeria #7A8090, mas a 3,95:1 sobre papel ele
+     reprova no WCAG AA para texto pequeno; este tom passa também sobre azul-papel. */
+  --cinza-rotulo: #666c7a;
 
   /* ---- Tipografia ---- */
   --serif-titulo: 'Playfair Display', 'Playfair Display Fallback', Georgia,

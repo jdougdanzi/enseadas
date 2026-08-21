@@ -52,8 +52,8 @@ const { proporcao = '3 / 2', nota } = Astro.props;
     font-size: 0.5625rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    /* Sem transparência: com 70% de opacidade o contraste caía a 3,3:1. */
     color: var(--azul);
-    opacity: 0.7;
     text-align: center;
     padding-inline: 12px;
   }

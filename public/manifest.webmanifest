@@ -1,0 +1,25 @@
+{
+  "name": "EnseadaS — Diário de Boas Notícias · Espírito Santo",
+  "short_name": "EnseadaS",
+  "description": "Revista eletrônica semanal com as boas notícias do Espírito Santo.",
+  "lang": "pt-BR",
+  "start_url": "/enseadas/",
+  "scope": "/enseadas/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#2B4FC7",
+  "icons": [
+    {
+      "src": "/enseadas/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/enseadas/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -50,15 +50,17 @@ const estilo = [
 ].join(';');
 
 const Nome = comoTitulo ? 'h1' : 'span';
+
+// Sem link, a assinatura vira um <span>: um <a> "desligado" por CSS continuaria
+// focável pelo teclado — um alvo morto para quem navega sem mouse.
+const Envelope = comLink ? 'a' : 'span';
+const atributos = comLink
+  ? { href: rotas.capa(), 'aria-label': `${SITE.nome} — ${SITE.tagline}` }
+  : {};
 ---
 
 <div class="logo" style={estilo}>
-  <a
-    class="logo-link"
-    href={rotas.capa()}
-    aria-label={`${SITE.nome} — ${SITE.tagline}`}
-    data-sem-link={comLink ? undefined : 'true'}
-  >
+  <Envelope class="logo-link" {...atributos}>
     <span class="bloco" aria-hidden="true">E</span>
     <span class="assinatura">
       <Nome class="wordmark">Enseada<span class="s-final">S</span></Nome>
@@ -76,7 +78,7 @@ const Nome = comoTitulo ? 'h1' : 'span';
         )
       }
     </span>
-  </a>
+  </Envelope>
 </div>
 
 <style>
@@ -99,11 +101,6 @@ const Nome = comoTitulo ? 'h1' : 'span';
     opacity: 0.82;
   }
 
-  /* Quando a assinatura já está dentro de um contexto de link (masthead da capa),
-     desativamos a navegação sem mudar o desenho. */
-  .logo-link[data-sem-link] {
-    pointer-events: none;
-  }
 
   .bloco {
     flex: none;

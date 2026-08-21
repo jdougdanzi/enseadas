@@ -12,9 +12,12 @@ interface Props {
   materia: Materia;
   proporcao?: string;
   comDeck?: boolean;
+  /** Nível do título no documento: h3 nas grades sob um h2; h2 em listagens diretas. */
+  nivel?: 'h2' | 'h3';
 }
 
-const { materia, proporcao = '16 / 9', comDeck = false } = Astro.props;
+const { materia, proporcao = '16 / 9', comDeck = false, nivel = 'h3' } = Astro.props;
+const Titulo = nivel;
 const url = rotas.materia(materia.id);
 ---
 
@@ -32,9 +35,9 @@ const url = rotas.materia(materia.id);
     {kicker(materia)}
     {ehRascunho(materia) && <BadgeRascunho />}
   </p>
-  <h3 class="titulo">
+  <Titulo class="titulo">
     <a href={url}>{materia.data.titulo}</a>
-  </h3>
+  </Titulo>
   {comDeck && <p class="deck-curto">{materia.data.linhaFina}</p>}
 </article>
 

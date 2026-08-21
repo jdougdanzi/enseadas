@@ -61,7 +61,8 @@ const descricao = capa.manchete
       ativo="capa"
     />
     <main id="conteudo">
-      <h2 class="apenas-leitores">{rotulo}</h2>
+      <!-- Nas capas do arquivo a assinatura não é h1; o título da página é a edição. -->
+      <h1 class="apenas-leitores">{rotulo}</h1>
       <CapaEdicao capa={capa} editorial={editorial} />
     </main>
   </div>

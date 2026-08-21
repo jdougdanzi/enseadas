@@ -70,3 +70,16 @@ const svgIcone = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="18
 const icone = await sharp(Buffer.from(svgIcone)).png({ compressionLevel: 9 }).toBuffer();
 await writeFile(SAIDA_ICONE, icone);
 console.log(`apple-touch-icon.png gerado (${(icone.length / 1024).toFixed(0)} KB) em public/`);
+
+// Ícones do manifesto (Android/instalação). O desenho de sangria total já
+// funciona como "maskable": o E fica dentro da zona segura central.
+for (const lado of [192, 512]) {
+  const svgManifesto = `<svg xmlns="http://www.w3.org/2000/svg" width="${lado}" height="${lado}" viewBox="0 0 180 180">
+  <rect width="180" height="180" fill="${AZUL}"/>
+  <text x="90" y="126" font-family="${SERIF}" font-weight="900" font-size="108"
+        fill="${PAPEL}" text-anchor="middle">E</text>
+</svg>`;
+  const png = await sharp(Buffer.from(svgManifesto)).png({ compressionLevel: 9 }).toBuffer();
+  await writeFile(join(RAIZ, `public/icone-${lado}.png`), png);
+  console.log(`icone-${lado}.png gerado (${(png.length / 1024).toFixed(0)} KB) em public/`);
+}

@@ -31,9 +31,9 @@ que a vendam. Visibilidade, aqui, não é elogio — é infraestrutura.
 
 Enseada é abrigo: o recorte de mar onde as ondas se acalmam e os barcos voltam. É isso que
 esta revista quer ser, um lugar de chegada. Toda sexta-feira, seis cadernos para percorrer os
-78 municípios sem pressa e sem sensacionalismo. Nesta estreia, cultura ficou sem matéria — não
-por falta de assunto, mas porque não fechamos nada com apuração suficiente a tempo. Preferimos
-o caderno vazio ao texto apressado.
+78 municípios sem pressa e sem sensacionalismo — nesta estreia, de Marataízes a Santa Teresa,
+de Guaçuí a São Mateus. Quando uma apuração não fecha a tempo, preferimos o espaço vazio ao
+texto apressado; essa troca não será feita aqui.
 
 Somos uma redação pequena e transparente sobre isso: a produção conta com apoio de
 inteligência artificial na pesquisa e na escrita, e cada texto é escolhido, revisado e assinado

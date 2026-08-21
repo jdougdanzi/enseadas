@@ -55,7 +55,11 @@ const descricao = `Tudo o que a EnseadaS publicou sobre ${assunto.rotulo} no Esp
       </header>
 
       <div class="grade">
-        {assunto.materias.map((materia) => <CartaoMateria materia={materia} comDeck />)}
+        {
+          assunto.materias.map((materia) => (
+            <CartaoMateria materia={materia} comDeck nivel="h2" />
+          ))
+        }
       </div>
     </main>
   </div>

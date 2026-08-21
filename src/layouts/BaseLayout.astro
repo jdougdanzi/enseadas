@@ -3,16 +3,15 @@
  * Layout único da revista: cabeça de SEO, fontes, analytics e rodapé.
  * Toda página passa por aqui — é o lugar que garante canonical, OG e JSON-LD.
  */
+/* Só os pesos que o CSS de fato usa (700/900, 400 + itálicos, 400/600/700):
+   cada import aqui é um arquivo que todo leitor baixa. */
 import '@fontsource/playfair-display/latin-700.css';
-import '@fontsource/playfair-display/latin-800.css';
 import '@fontsource/playfair-display/latin-900.css';
-import '@fontsource/playfair-display/latin-900-italic.css';
 import '@fontsource/playfair-display/latin-700-italic.css';
 import '@fontsource/libre-caslon-text/latin-400.css';
 import '@fontsource/libre-caslon-text/latin-400-italic.css';
 import '@fontsource/libre-caslon-text/latin-700.css';
 import '@fontsource/archivo/latin-400.css';
-import '@fontsource/archivo/latin-500.css';
 import '@fontsource/archivo/latin-600.css';
 import '@fontsource/archivo/latin-700.css';
 
@@ -84,6 +83,7 @@ const analiseAtiva = import.meta.env.PROD && GA_MEASUREMENT_ID !== '';
 
     <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
     <link rel="apple-touch-icon" href={href('/apple-touch-icon.png')} />
+    <link rel="manifest" href={href('/manifest.webmanifest')} />
     <link
       rel="alternate"
       type="application/rss+xml"
