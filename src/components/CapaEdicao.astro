@@ -22,6 +22,10 @@ const { capa, temEditorial = false } = Astro.props;
 const { edicao, manchete, laterais, linhaInferior } = capa;
 const destaque = edicao.data.destaqueLateral;
 const caminhoEdicao = rotas.edicao(edicao.data.numero);
+
+// Com poucas chamadas, a coluna lateral fica curta ao lado do lead: as
+// linhas-finas ocupam o espaço com texto útil em vez de vazio.
+const lateralComDeck = laterais.length <= 3;
 ---
 
 <div class="capa">
@@ -44,7 +48,7 @@ const caminhoEdicao = rotas.edicao(edicao.data.numero);
       {
         laterais.map((materia, i) => (
           <div class:list={['item-lateral', { primeiro: i === 0 }]}>
-            <ChamadaLateral materia={materia} />
+            <ChamadaLateral materia={materia} comDeck={lateralComDeck} />
           </div>
         ))
       }
@@ -137,9 +141,10 @@ const caminhoEdicao = rotas.edicao(edicao.data.numero);
     padding-top: 16px;
   }
 
+  /* auto-fit para a linha fechar bonito com uma, duas ou três matérias */
   .linha-inferior {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 26px;
     padding: 22px 0 6px;
   }

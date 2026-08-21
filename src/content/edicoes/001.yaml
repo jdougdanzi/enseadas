@@ -1,3 +1,12 @@
 numero: 1
 dataFechamento: '2026-08-21'
-status: aberta
+status: publicada
+capa:
+  manchete: premio-cafes-especiais-2026
+  laterais:
+    - mutirao-em-acao-marataizes
+    - unimed-projetos-sociais-sul
+  linhaInferior:
+    - rota-mata-atlantica-capixaba
+    - fides-santa-maria-de-jetiba
+editorial: editorial-001
