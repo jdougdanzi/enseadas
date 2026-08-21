@@ -1,0 +1,53 @@
+---
+/**
+ * Capa da edição corrente. Sem edição publicada, mostra a página de estreia.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Masthead from '../components/Masthead.astro';
+import CapaEdicao from '../components/CapaEdicao.astro';
+import EmBreve from '../components/EmBreve.astro';
+import { SITE } from '../config';
+import { edicaoCorrente, montarCapa, getEditorialDaEdicao } from '../lib/conteudo';
+import { organizacao, website } from '../lib/seo';
+import { numeroEdicao } from '../lib/datas';
+
+const edicao = await edicaoCorrente();
+const capa = edicao ? await montarCapa(edicao) : undefined;
+const editorial = edicao ? await getEditorialDaEdicao(edicao.data.numero) : undefined;
+
+const descricao = capa?.manchete
+  ? `${capa.manchete.data.titulo} — ${capa.manchete.data.linhaFina}`
+  : SITE.descricao;
+---
+
+<BaseLayout
+  titulo={SITE.nome}
+  descricao={descricao}
+  caminho="/"
+  jsonLd={[organizacao(), website()]}
+>
+  <div class="container">
+    {
+      edicao && capa ? (
+        <>
+          <Masthead
+            data={edicao.data.dataFechamento}
+            edicao={edicao.data.numero}
+            ativo="capa"
+            comoTitulo
+          />
+          <main id="conteudo">
+            <h2 class="apenas-leitores">
+              Edição Nº {numeroEdicao(edicao.data.numero)}
+            </h2>
+            <CapaEdicao capa={capa} temEditorial={Boolean(editorial)} />
+          </main>
+        </>
+      ) : (
+        <main id="conteudo">
+          <EmBreve />
+        </main>
+      )
+    }
+  </div>
+</BaseLayout>

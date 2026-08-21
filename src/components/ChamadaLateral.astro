@@ -1,0 +1,68 @@
+---
+/**
+ * Item da coluna lateral: kicker e título, separados por hairline.
+ */
+import BadgeRascunho from './BadgeRascunho.astro';
+import { kicker, ehRascunho, type Materia } from '../lib/conteudo';
+import { rotas } from '../lib/url';
+
+interface Props {
+  materia: Materia;
+  /** Mostra a linha-fina abaixo do título (usado quando há poucas chamadas). */
+  comDeck?: boolean;
+}
+
+const { materia, comDeck = false } = Astro.props;
+---
+
+<article class="chamada">
+  <p class="kicker">
+    {kicker(materia)}
+    {ehRascunho(materia) && <BadgeRascunho />}
+  </p>
+  <h3 class="titulo">
+    <a href={rotas.materia(materia.id)}>{materia.data.titulo}</a>
+  </h3>
+  {comDeck && <p class="deck-curto">{materia.data.linhaFina}</p>}
+</article>
+
+<style>
+  .chamada {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.59375rem;
+    letter-spacing: 0.26em;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-3);
+    line-height: 1.25;
+  }
+
+  .titulo a {
+    color: var(--tinta);
+  }
+
+  .titulo a:hover,
+  .titulo a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .deck-curto {
+    font-family: var(--serif-texto);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--cinza-texto);
+  }
+</style>

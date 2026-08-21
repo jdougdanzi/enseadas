@@ -1,0 +1,55 @@
+/**
+ * EnseadaS — tokens da marca.
+ * Fonte: Manual da Marca v1.0 (seções 02 e 03). Não alterar valores sem atualizar o manual.
+ */
+
+:root {
+  /* ---- Cores ---- */
+  --azul: #2b4fc7; /* logo, links, kickers, capitulares, citações */
+  --azul-escuro: #1e3a99; /* hover de links */
+  --tinta: #14161a; /* manchetes e texto corrido */
+  --papel: #ffffff; /* fundo único da revista */
+  --azul-papel: #eaeefb; /* fundos de apoio, chips, caixas */
+  --fio: #d9dbe3; /* hairlines e bordas */
+  --fio-claro: #edeef2; /* divisores internos mais leves */
+  --cinza-texto: #3c4048; /* decks e legendas escuras */
+  --cinza-rotulo: #7a8090; /* rótulos, bylines secundárias */
+
+  /* ---- Tipografia ---- */
+  --serif-titulo: 'Playfair Display', 'Playfair Display Fallback', Georgia,
+    'Times New Roman', serif;
+  --serif-texto: 'Libre Caslon Text', 'Libre Caslon Text Fallback', Georgia,
+    'Times New Roman', serif;
+  --sans: 'Archivo', 'Archivo Fallback', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+
+  /* ---- Medidas de página (grade de jornal) ---- */
+  --max-pagina: 1200px;
+  --max-manchete: 760px; /* bloco de título da matéria */
+  --max-foto: 900px; /* foto de abertura */
+  --max-corpo: 680px; /* coluna de texto corrido */
+  --calha: 24px;
+  --margem-lateral: 24px;
+
+  /* ---- Traços do jornal ---- */
+  --fio-grosso: 3px;
+  --fio-fino: 1px;
+
+  /* ---- Escala tipográfica ---- */
+  --t-manchete-capa: clamp(2rem, 1.35rem + 2.6vw, 2.75rem); /* 32 → 44px */
+  --t-manchete-materia: clamp(1.9rem, 1.2rem + 2.9vw, 2.625rem); /* 30 → 42px */
+  --t-titulo-2: clamp(1.35rem, 1.1rem + 1vw, 1.75rem); /* 21.6 → 28px */
+  --t-titulo-3: 1.125rem; /* 18px */
+  --t-titulo-4: 1rem; /* 16px */
+  --t-deck: clamp(1rem, 0.93rem + 0.3vw, 1.1875rem); /* 16 → 19px */
+  --t-corpo: 1.09375rem; /* 17.5px */
+  --t-kicker: 0.6875rem; /* 11px */
+  --t-rotulo: 0.65625rem; /* 10.5px */
+  --t-legenda: 0.71875rem; /* 11.5px */
+
+  --lh-manchete: 1.12;
+  --lh-corpo: 1.68;
+  --tracking-kicker: 0.28em;
+  --tracking-rotulo: 0.2em;
+  --tracking-nav: 0.2em;
+}

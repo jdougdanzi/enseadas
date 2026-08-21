@@ -1,0 +1,21 @@
+# build
+dist/
+.astro/
+node_modules/
+
+# ambiente
+.env
+.env.production
+.DS_Store
+
+# macOS / editores
+.vscode/
+*.log
+npm-debug.log*
+
+# material de marca (interno — o repositório é público)
+Revista Enseadas logo concepts/
+
+# rascunhos de trabalho da redação que não vão ao ar
+redacao/pautas/*.md
+!redacao/pautas/.gitkeep

@@ -1,0 +1,84 @@
+---
+/**
+ * Matéria das linhas inferiores: foto 16:9, kicker e título.
+ * Sem sombra e sem borda — a separação é dada pela calha e pelos fios da grade.
+ */
+import FotoMateria from './FotoMateria.astro';
+import BadgeRascunho from './BadgeRascunho.astro';
+import { kicker, ehRascunho, type Materia } from '../lib/conteudo';
+import { rotas } from '../lib/url';
+
+interface Props {
+  materia: Materia;
+  proporcao?: string;
+  comDeck?: boolean;
+}
+
+const { materia, proporcao = '16 / 9', comDeck = false } = Astro.props;
+const url = rotas.materia(materia.id);
+---
+
+<article class="cartao">
+  <a class="foto" href={url} tabindex="-1" aria-hidden="true">
+    <FotoMateria
+      foto={materia.data.foto}
+      proporcao={proporcao}
+      sizes="(max-width: 700px) 100vw, 360px"
+      larguras={[360, 560, 760]}
+      notaPlaceholder="Foto em apuração"
+    />
+  </a>
+  <p class="kicker">
+    {kicker(materia)}
+    {ehRascunho(materia) && <BadgeRascunho />}
+  </p>
+  <h3 class="titulo">
+    <a href={url}>{materia.data.titulo}</a>
+  </h3>
+  {comDeck && <p class="deck-curto">{materia.data.linhaFina}</p>}
+</article>
+
+<style>
+  .cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .foto {
+    display: block;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.5625rem;
+    letter-spacing: 0.24em;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-4);
+    line-height: 1.3;
+  }
+
+  .titulo a {
+    color: var(--tinta);
+  }
+
+  .titulo a:hover,
+  .titulo a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .deck-curto {
+    font-family: var(--serif-texto);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--cinza-texto);
+  }
+</style>

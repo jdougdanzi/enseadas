@@ -1,0 +1,82 @@
+---
+/**
+ * Masthead da capa (Manual da Marca, seção 05):
+ * linha de data + número da edição, fio triplo, assinatura centralizada,
+ * fio simples e navegação de cadernos entre hairlines.
+ */
+import Logo from './Logo.astro';
+import NavCadernos from './NavCadernos.astro';
+import { dataMasthead, numeroEdicao } from '../lib/datas';
+import { SITE } from '../config';
+
+interface Props {
+  data: string;
+  edicao: number;
+  /** Marca o item ativo da navegação. */
+  ativo?: string;
+  /** Renderiza o nome da revista como <h1> (capa da edição corrente). */
+  comoTitulo?: boolean;
+}
+
+const { data, edicao, ativo = 'capa', comoTitulo = false } = Astro.props;
+---
+
+<header class="masthead">
+  <div class="linha-topo">
+    <span>{dataMasthead(data, SITE.cidadeSede)}</span>
+    <span>Edição Nº {numeroEdicao(edicao)}</span>
+  </div>
+
+  <div class="fio-triplo"></div>
+
+  <div class="assinatura">
+    <Logo tamanho={46} comTagline taglineCompleta comLink={false} comoTitulo={comoTitulo} />
+  </div>
+
+  <div class="fio-tinta">
+    <NavCadernos ativo={ativo} />
+  </div>
+</header>
+
+<style>
+  .masthead {
+    padding-top: 14px;
+  }
+
+  .linha-topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.59375rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cinza-rotulo);
+  }
+
+  .assinatura {
+    display: flex;
+    justify-content: center;
+    padding: 22px 0;
+  }
+
+  @media (max-width: 720px) {
+    .linha-topo {
+      font-size: 0.5rem;
+      letter-spacing: 0.12em;
+    }
+
+    .assinatura {
+      padding: 18px 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .assinatura :global(.logo) {
+      --logo-lado: 38px;
+    }
+  }
+</style>

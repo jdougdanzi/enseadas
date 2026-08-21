@@ -1,0 +1,185 @@
+---
+/**
+ * Corpo da capa (Manual da Marca, seção 05):
+ * lead 2/3 + fio vertical + coluna lateral 1/3, e a linha inferior de três matérias.
+ * Usado tanto na home quanto no arquivo de edições.
+ */
+import ChamadaLead from './ChamadaLead.astro';
+import ChamadaLateral from './ChamadaLateral.astro';
+import CartaoMateria from './CartaoMateria.astro';
+import CaixaDestaque from './CaixaDestaque.astro';
+import { rotas } from '../lib/url';
+import { numeroEdicao } from '../lib/datas';
+import type { CapaMontada } from '../lib/conteudo';
+
+interface Props {
+  capa: CapaMontada;
+  /** Há editorial publicado nesta edição? */
+  temEditorial?: boolean;
+}
+
+const { capa, temEditorial = false } = Astro.props;
+const { edicao, manchete, laterais, linhaInferior } = capa;
+const destaque = edicao.data.destaqueLateral;
+const caminhoEdicao = rotas.edicao(edicao.data.numero);
+---
+
+<div class="capa">
+  <div class="principal">
+    <div class="coluna-lead">
+      {
+        manchete ? (
+          <ChamadaLead materia={manchete} nivel="h2" proporcao="16 / 9" prioridade />
+        ) : (
+          <p class="vazio">
+            A manchete desta edição ainda não foi definida.
+          </p>
+        )
+      }
+    </div>
+
+    <div class="fio-vertical" aria-hidden="true"></div>
+
+    <div class="coluna-lateral">
+      {
+        laterais.map((materia, i) => (
+          <div class:list={['item-lateral', { primeiro: i === 0 }]}>
+            <ChamadaLateral materia={materia} />
+          </div>
+        ))
+      }
+
+      {
+        temEditorial && (
+          <div class="item-lateral">
+            <p class="kicker kicker-editorial">Opinião · Editorial</p>
+            <p class="link-editorial">
+              <a href={rotas.editorial(edicao.data.numero)}>
+                Por que escolhemos as boas notícias
+              </a>
+            </p>
+          </div>
+        )
+      }
+
+      <div class="rodape-lateral">
+        <CaixaDestaque
+          titulo={destaque?.titulo}
+          texto={destaque?.texto}
+          caminhoCompartilhar={caminhoEdicao}
+          tituloCompartilhar={`EnseadaS — Edição Nº ${numeroEdicao(edicao.data.numero)}`}
+        />
+      </div>
+    </div>
+  </div>
+
+  {
+    linhaInferior.length > 0 && (
+      <div class="fio-tinta linha-inferior">
+        {linhaInferior.map((materia) => (
+          <CartaoMateria materia={materia} />
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .principal {
+    display: grid;
+    grid-template-columns: 1.6fr 1px 1fr;
+    gap: 26px;
+    border-top: var(--fio-fino) solid var(--fio);
+    padding: 26px 0;
+  }
+
+  .coluna-lateral {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .item-lateral {
+    padding: 16px 0;
+    border-bottom: var(--fio-fino) solid var(--fio);
+  }
+
+  .item-lateral.primeiro {
+    padding-top: 0;
+  }
+
+  .kicker-editorial {
+    font-size: 0.59375rem;
+    letter-spacing: 0.26em;
+    margin-bottom: 6px;
+  }
+
+  .link-editorial {
+    font-family: var(--serif-titulo);
+    font-style: italic;
+    font-weight: 700;
+    font-size: var(--t-titulo-3);
+    line-height: 1.25;
+  }
+
+  .link-editorial a {
+    color: var(--tinta);
+  }
+
+  .link-editorial a:hover,
+  .link-editorial a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .rodape-lateral {
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .linha-inferior {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+    padding: 22px 0 6px;
+  }
+
+  .vazio {
+    font-family: var(--serif-texto);
+    font-style: italic;
+    color: var(--cinza-rotulo);
+  }
+
+  @media (max-width: 860px) {
+    .principal {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-bottom: 0;
+    }
+
+    .fio-vertical {
+      display: none;
+    }
+
+    .coluna-lateral {
+      border-top: var(--fio-fino) solid var(--tinta);
+      margin-top: 26px;
+      padding-top: 6px;
+    }
+
+    .rodape-lateral {
+      padding-bottom: 22px;
+    }
+
+    .linha-inferior {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+  }
+
+  @media (min-width: 861px) and (max-width: 1000px) {
+    .linha-inferior {
+      gap: 20px;
+    }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+/**
+ * "Leia também" — fio duplo e até três colunas separadas por hairline.
+ */
+import { kicker, type Materia } from '../lib/conteudo';
+import { rotas } from '../lib/url';
+
+interface Props {
+  materias: Materia[];
+  titulo?: string;
+}
+
+const { materias, titulo = 'Leia também' } = Astro.props;
+---
+
+{
+  materias.length > 0 && (
+    <section class="leia" aria-labelledby="leia-tambem">
+      <div class="fio-triplo" />
+      <div class="conteudo">
+        <h2 class="kicker" id="leia-tambem">
+          {titulo}
+        </h2>
+        <ul class="colunas">
+          {materias.map((m) => (
+            <li>
+              <p class="kicker kicker-item">{kicker(m)}</p>
+              <p class="titulo">
+                <a href={rotas.materia(m.id)}>{m.data.titulo}</a>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .leia {
+    max-width: var(--max-foto);
+    margin: 44px auto 0;
+  }
+
+  .conteudo {
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .colunas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--calha);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .colunas li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .colunas li:not(:last-child) {
+    border-right: var(--fio-fino) solid var(--fio);
+    padding-right: var(--calha);
+  }
+
+  .kicker-item {
+    font-size: 0.5625rem;
+    letter-spacing: 0.24em;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    line-height: 1.3;
+  }
+
+  .titulo a {
+    color: var(--tinta);
+  }
+
+  .titulo a:hover,
+  .titulo a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  @media (max-width: 720px) {
+    .colunas {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .colunas li:not(:last-child) {
+      border-right: 0;
+      border-bottom: var(--fio-fino) solid var(--fio);
+      padding-right: 0;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+  }
+</style>

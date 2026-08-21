@@ -1,0 +1,95 @@
+---
+/**
+ * Caixa azul-papel do pé da coluna lateral.
+ * Sem `titulo`/`texto`, vira o convite de compartilhamento da edição.
+ */
+import { SITE } from '../config';
+import { linkWhatsApp } from '../lib/url';
+
+interface Props {
+  titulo?: string;
+  texto?: string;
+  /** Caminho a compartilhar quando a caixa é o convite padrão. */
+  caminhoCompartilhar?: string;
+  tituloCompartilhar?: string;
+}
+
+const {
+  titulo,
+  texto,
+  caminhoCompartilhar = '/',
+  tituloCompartilhar = `${SITE.nome} — ${SITE.tagline}`,
+} = Astro.props;
+
+const personalizada = Boolean(titulo && texto);
+---
+
+<aside class="caixa-apoio caixa">
+  {
+    personalizada ? (
+      <>
+        <p class="rotulo-caixa">{titulo}</p>
+        <p class="texto">{texto}</p>
+      </>
+    ) : (
+      <>
+        <p class="rotulo-caixa">Espalhe a boa notícia</p>
+        <p class="texto">
+          Toda sexta-feira, seis cadernos de coisas boas do Espírito Santo.
+        </p>
+        <a
+          class="botao"
+          href={linkWhatsApp(tituloCompartilhar, caminhoCompartilhar)}
+          rel="noopener"
+          target="_blank"
+        >
+          Compartilhar no WhatsApp
+        </a>
+      </>
+    )
+  }
+</aside>
+
+<style>
+  .caixa {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rotulo-caixa {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.59375rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+
+  .texto {
+    font-family: var(--sans);
+    font-size: 0.78125rem;
+    line-height: 1.5;
+    color: var(--tinta);
+  }
+
+  .botao {
+    margin-top: 6px;
+    align-self: flex-start;
+    background: var(--azul);
+    color: var(--papel);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 9px 14px;
+  }
+
+  .botao:hover,
+  .botao:focus-visible {
+    background: var(--azul-escuro);
+    color: var(--papel);
+    text-decoration: none;
+  }
+</style>

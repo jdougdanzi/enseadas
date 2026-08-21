@@ -1,0 +1,265 @@
+---
+/**
+ * Quem faz, como faz e com que critério. É a página que sustenta a confiança.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { EXPEDIENTE, SITE } from '../config';
+import { CADERNOS } from '../data/cadernos';
+import { edicaoCorrente } from '../lib/conteudo';
+import { organizacao, trilha } from '../lib/seo';
+
+const edicao = await edicaoCorrente();
+const descricao = `Quem faz a ${SITE.nome}, como as matérias são apuradas e como falar com a redação.`;
+---
+
+<BaseLayout
+  titulo="Expediente"
+  descricao={descricao}
+  caminho="/expediente"
+  jsonLd={[
+    organizacao(),
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Expediente', caminho: '/expediente' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Expediente</h1>
+        <p class="deck">
+          {SITE.tagline}. Uma edição por semana, sempre na sexta-feira.
+        </p>
+      </header>
+
+      <div class="grade">
+        <div class="texto">
+          <section>
+            <h2>O que é a EnseadaS</h2>
+            <p>
+              Enseada é abrigo: onde o mar se acalma e os barcos voltam. A EnseadaS
+              é uma revista eletrônica semanal dedicada às coisas boas do Espírito
+              Santo — as iniciativas, as pessoas, a cultura e os lugares que
+              raramente ganham manchete, mas sustentam a vida do estado.
+            </p>
+            <p>
+              A revista se organiza em seis cadernos fixos:
+              {CADERNOS.map((c, i) => (
+                <>
+                  {i > 0 ? (i === CADERNOS.length - 1 ? ' e ' : ', ') : ' '}
+                  <strong>{c.nome.toLowerCase()}</strong>
+                </>
+              ))}.
+            </p>
+          </section>
+
+          <section>
+            <h2>Como apuramos</h2>
+            <p>
+              Toda matéria parte de um fato verificável, publicado por veículos de
+              imprensa, órgãos públicos ou instituições identificáveis. As fontes
+              consultadas ficam listadas ao pé de cada texto, com link para a
+              origem — você pode conferir tudo.
+            </p>
+            <p>
+              Nada aqui é inventado: não publicamos pessoas, declarações, números
+              ou eventos que não constem de uma fonte real. Quando uma informação
+              não pode ser confirmada, ela não entra.
+            </p>
+          </section>
+
+          <section>
+            <h2>Inteligência artificial na redação</h2>
+            <p>
+              A produção dos textos conta com apoio de inteligência artificial na
+              pesquisa, na redação e na edição. Toda pauta é escolhida, revisada e
+              aprovada por um editor humano antes de ir ao ar, e a responsabilidade
+              pelo conteúdo publicado é inteiramente humana.
+            </p>
+          </section>
+
+          <section>
+            <h2>Fotografia</h2>
+            <p>
+              As imagens vêm de acervos com licença livre, principalmente o
+              Wikimedia Commons, sempre com crédito ao autor e indicação da
+              licença na legenda. Quando não há imagem adequada e licenciada para
+              a matéria, preferimos deixar o espaço com a marca da revista a usar
+              uma foto que não represente o fato.
+            </p>
+          </section>
+
+          <section>
+            <h2>Correções</h2>
+            <p>
+              Errou-se? Escreva para
+              <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a>. As
+              correções são feitas no próprio texto e sinalizadas ao pé da matéria.
+            </p>
+          </section>
+        </div>
+
+        <aside class="lateral">
+          <div class="fio-triplo"></div>
+          <div class="fio-tinta bloco">
+            <h2 class="titulo-bloco">Quem faz</h2>
+            <dl>
+              {
+                EXPEDIENTE.map((item) => (
+                  <div class="item">
+                    <dt>{item.funcao}</dt>
+                    <dd>{item.nome}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+
+          <div class="caixa-apoio contato">
+            <p class="rotulo-caixa">Sugira uma pauta</p>
+            <p class="texto-caixa">
+              Conhece uma boa história capixaba? Conte para a gente:
+              <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a>
+            </p>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--max-manchete);
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .grade {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 40px;
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding-top: 28px;
+  }
+
+  .texto {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 62ch;
+  }
+
+  .texto h2 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--azul);
+    margin-bottom: 12px;
+  }
+
+  .texto p {
+    font-family: var(--serif-texto);
+    font-size: 1.0625rem;
+    line-height: 1.68;
+  }
+
+  .texto p + p {
+    margin-top: 1em;
+  }
+
+  .texto a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .lateral {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bloco {
+    padding: 14px 0 18px;
+  }
+
+  .titulo-bloco {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: var(--t-kicker);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .lateral dl {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item dt {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+
+  .item dd {
+    margin: 1px 0 0;
+    font-family: var(--serif-texto);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .contato {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .rotulo-caixa {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.59375rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+
+  .texto-caixa {
+    font-family: var(--sans);
+    font-size: 0.78125rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 860px) {
+    .grade {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .lateral {
+      border-top: var(--fio-fino) solid var(--fio);
+      padding-top: 20px;
+    }
+  }
+</style>

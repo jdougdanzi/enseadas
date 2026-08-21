@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run dev)",
+      "Bash(npm run check)",
+      "Bash(npm run validar:*)",
+      "Bash(npm run foto:*)",
+      "Bash(npm run proxima-sexta:*)",
+      "Bash(node scripts/validar-edicao.mjs:*)",
+      "Bash(node scripts/wikimedia.mjs:*)",
+      "Bash(node scripts/proxima-sexta.mjs:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run watch:*)",
+      "Bash(gh run view:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git revert:*)",
+      "Bash(gh repo:*)"
+    ],
+    "deny": ["Bash(git push --force:*)", "Bash(git reset --hard:*)"]
+  }
+}

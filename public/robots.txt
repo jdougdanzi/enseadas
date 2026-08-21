@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jdougdanzi.github.io/enseadas/sitemap-index.xml

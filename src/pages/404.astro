@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { CADERNOS } from '../data/cadernos';
+import { rotas } from '../lib/url';
+---
+
+<BaseLayout
+  titulo="Página não encontrada"
+  descricao="A página que você procurou não existe nesta enseada."
+  caminho="/404"
+  semIndexacao
+>
+  <div class="container">
+    <HeaderCompacto />
+
+    <main id="conteudo" class="erro">
+      <p class="kicker">Erro 404</p>
+      <h1 class="titulo">Esta página não está em nenhuma enseada</h1>
+      <p class="deck">
+        O endereço pode ter mudado, ou a matéria ainda não foi publicada.
+      </p>
+
+      <nav class="atalhos" aria-label="Atalhos">
+        <a class="principal" href={rotas.capa()}>Ir para a capa</a>
+        <ul>
+          {
+            CADERNOS.map((c) => (
+              <li>
+                <a class="chip" href={rotas.caderno(c.slug)}>
+                  {c.nome}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .erro {
+    max-width: var(--max-manchete);
+    margin: 0 auto;
+    padding: 70px 0 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .atalhos {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .principal {
+    background: var(--azul);
+    color: var(--papel);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+  }
+
+  .principal:hover,
+  .principal:focus-visible {
+    background: var(--azul-escuro);
+    color: var(--papel);
+    text-decoration: none;
+  }
+
+  .atalhos ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+</style>

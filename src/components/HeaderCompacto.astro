@@ -1,0 +1,75 @@
+---
+/**
+ * Cabeçalho das páginas internas (caderno, matéria, editorial):
+ * assinatura reduzida à esquerda, cadernos ao centro, data à direita.
+ */
+import Logo from './Logo.astro';
+import NavCadernos from './NavCadernos.astro';
+import { dataCurta } from '../lib/datas';
+
+interface Props {
+  data?: string;
+  ativo?: string;
+}
+
+const { data, ativo = '' } = Astro.props;
+---
+
+<header class="cabecalho">
+  <div class="marca">
+    <Logo tamanho={30} />
+  </div>
+
+  <div class="cadernos">
+    <NavCadernos ativo={ativo} compacta />
+  </div>
+
+  {data && <div class="data">{dataCurta(data)}</div>}
+</header>
+
+<style>
+  .cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0 12px;
+    border-bottom: var(--fio-fino) solid var(--tinta);
+  }
+
+  .marca {
+    flex: none;
+  }
+
+  .cadernos {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .data {
+    flex: none;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    color: var(--cinza-rotulo);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .cabecalho {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cadernos {
+      order: 3;
+      flex-basis: 100%;
+      justify-content: flex-start;
+      border-top: var(--fio-fino) solid var(--fio);
+      padding-top: 10px;
+    }
+  }
+</style>

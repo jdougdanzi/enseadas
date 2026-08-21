@@ -1,0 +1,17 @@
+# Edição de DEMONSTRAÇÃO — conteúdo fictício vindo dos mockups da marca.
+# Serve para conferir o desenho das páginas. Nunca vai ao ar: status "exemplo"
+# a exclui do build de produção (ver src/lib/conteudo.ts).
+numero: 0
+dataFechamento: '2026-08-21'
+status: exemplo
+capa:
+  manchete: ex-mutirao-restinga
+  laterais:
+    - ex-panela-de-barro
+    - ex-professor-surfe
+    - ex-festival-congo
+  linhaInferior:
+    - ex-orquestra-casaca
+    - ex-trilha-enseadas
+    - ex-biblioteca-cariacica
+editorial: ex-editorial-000

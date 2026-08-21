@@ -1,0 +1,184 @@
+# EnseadaS — manual da redação
+
+Revista eletrônica **semanal** de boas notícias do Espírito Santo. Fecha toda **sexta-feira**,
+em edições numeradas (Nº 001, 002…). Editor responsável: **Douglas Danzi**.
+
+Site: <https://jdougdanzi.github.io/enseadas/> · Repositório: `jdougdanzi/enseadas`
+
+---
+
+## O ciclo da semana
+
+```
+/nova-edicao   abre a edição da semana (próxima sexta)
+/pauta         pesquisa boas notícias reais do ES e propõe a pauta
+/materia       apura e escreve um rascunho (uma chamada por matéria)
+/revisar       prévia no navegador; Douglas aprova uma a uma
+/fechar-edicao define manchete, ordem da capa e escreve o editorial
+/publicar      valida, faz commit, sobe para o GitHub Pages
+```
+
+Cada passo é uma skill em `.claude/skills/`. Rodar fora de ordem é permitido, mas
+`/publicar` só funciona com a edição fechada e validada.
+
+## Comandos
+
+```bash
+npm run dev                          # prévia em http://localhost:4321/enseadas/
+npm run build                        # build de produção (falha se houver conteúdo inválido)
+npm run validar 1                    # confere a edição 001
+npm run validar 1 -- --publicar      # confere se pode ir ao ar
+npm run foto "termo de busca"        # procura foto livre no Wikimedia Commons
+npm run proxima-sexta -- --status    # panorama das edições
+```
+
+---
+
+## Regras duras
+
+Estas não se negociam. Se uma delas conflitar com um pedido, pare e diga ao Douglas.
+
+1. **Nada é inventado.** Nenhum fato, nome, número, declaração ou evento entra numa
+   matéria sem constar de uma fonte real, com URL, registrada em `fontes[]`. Não existe
+   "personagem ilustrativo" nem citação recriada. Se a informação não foi encontrada, ela
+   não entra — e a matéria pode simplesmente não existir.
+2. **Toda matéria cita as fontes** no frontmatter. O build e o validador barram quem não cita.
+3. **Foto só com licença livre** (domínio público, CC0, CC BY, CC BY-SA). Nunca NC nem ND.
+   Crédito e licença são obrigatórios. Sem foto adequada, usa-se o placeholder da marca —
+   jamais uma imagem que não retrate o fato.
+4. **`git push` só com o "sim" explícito do Douglas**, dentro do `/publicar`.
+5. **Aprovação é uma a uma.** Só mude `status: aprovada` quando Douglas aprovar aquela matéria.
+   Nunca aprove em lote por conta própria.
+6. **Conteúdo `exemplo: true` nunca é aprovado nem publicado.** É material de demonstração
+   (edição 000, arquivos `ex-*.md`) vindo dos mockups da marca — texto fictício.
+7. **A marca não se redesenha.** Cores, fontes, logo e grade estão no Manual da Marca
+   (`Revista Enseadas logo concepts/`, fora do Git). Mudanças de identidade só com o Douglas.
+
+---
+
+## Manual de redação
+
+**Tom.** Jornalístico. Positivo sem ser ingênuo: a boa notícia é apurada com o mesmo rigor de
+qualquer outra. Não faça publieditorial de prefeitura nem release de assessoria — se a única
+fonte é o órgão que se autoelogia, ou a pauta cai, ou se busca contraponto real.
+
+**Estrutura da matéria** (350–600 palavras):
+- **Título** ≤ 9 palavras, sem clickbait, sem ponto final. Diz o que aconteceu.
+- **Linha-fina** complementa o título com o dado concreto — nunca o repete.
+- **Kicker** é sempre `CADERNO · CIDADE` (montado automaticamente pelos campos).
+- **Lide direto**: o que aconteceu, onde, quando, com quem. Sem rodeio poético de abertura.
+- **Citação** só quando textual na fonte. Em bloco de citação markdown, com a atribuição no
+  último parágrafo do bloco:
+  ```markdown
+  > "A praia é o quintal de todo mundo."
+  >
+  > Carla Nunes · moradora e organizadora
+  ```
+- **Fecho** com o que vem a seguir (próxima etapa, como participar, quando acontece).
+- Subtítulos (`##`) só se o texto passar de 450 palavras.
+
+**Português.** pt-BR, norma culta, sem jargão de assessoria ("visa a", "no sentido de",
+"enquanto enquanto lugar de"). Números por extenso até dez. Nomes de lugares capixabas
+conferidos. Evite adjetivos avaliativos ("incrível", "maravilhoso") — o fato convence sozinho.
+
+**Pessoas (LGPD e cuidado editorial).** Só cite pessoas que já aparecem publicamente nas
+fontes, e apenas com informação não sensível. Nada de endereço, dado de saúde, situação
+financeira, orientação sexual ou religião de pessoa privada. Criança só com o contexto já
+público e sem identificação individual desnecessária. Na dúvida, pergunte ao Douglas.
+
+**Cadernos** — escolha o que responde "de que trata a história", não "onde aconteceu":
+
+| Nº | Caderno | O que entra |
+|---|---|---|
+| 1 | `cidades` | iniciativas urbanas, obras do bem, vida de bairro nos 78 municípios |
+| 2 | `cultura` | congo, festas, música, arte, patrimônio |
+| 3 | `sabores` | moqueca, torta capixaba, panela de barro, cafés, quem cozinha |
+| 4 | `mar-e-montanha` | turismo, natureza, trilhas, praias, montanhas |
+| 5 | `gente-boa` | perfis de pessoas que fazem diferença na comunidade |
+| 6 | `agenda` | eventos, feiras, shows, programação com data marcada |
+
+---
+
+## Como o conteúdo é organizado
+
+**Matéria** = um arquivo em `src/content/materias/<slug>.md`. O nome do arquivo vira a URL
+(`/materia/<slug>/`). Use slug curto e descritivo, sem acento: `mutirao-restinga-vila-velha`.
+
+```yaml
+---
+titulo: Mutirão replanta a restinga e devolve a praia à cidade
+linhaFina: Trezentos voluntários, quatro mil mudas e um sábado que virou notícia boa.
+tipo: materia            # ou "editorial"
+caderno: cidades         # obrigatório em matéria
+cidade: Vila Velha       # obrigatório em matéria
+tags: [Meio ambiente, Voluntariado]
+data: '2026-08-21'       # sempre string YYYY-MM-DD, nunca sem aspas
+edicao: 1
+status: rascunho         # vira "aprovada" só com o OK do Douglas
+foto:                    # opcional — mas se houver, todos os campos são obrigatórios
+  src: ../../assets/fotos/mutirao-restinga.jpg
+  alt: 'Voluntários plantam mudas na areia da praia'
+  legenda: 'Voluntários plantam mudas de restinga na Praia da Costa.'
+  credito: 'Fulano de Tal/Wikimedia Commons'
+  licenca: 'CC BY-SA 4.0'
+  fonteUrl: 'https://commons.wikimedia.org/wiki/File:...'
+fontes:
+  - titulo: Mutirão planta 4 mil mudas em Vila Velha
+    url: https://g1.globo.com/es/espirito-santo/...
+    veiculo: G1 Espírito Santo
+---
+```
+
+**Edição** = `src/content/edicoes/NNN.yaml`. A matéria diz a que edição pertence (`edicao:`);
+a edição diz o papel de cada uma na capa:
+
+```yaml
+numero: 1
+dataFechamento: '2026-08-21'
+status: aberta                    # aberta → fechada → publicada
+capa:
+  manchete: mutirao-restinga-vila-velha
+  laterais: [panela-de-barro-selo, professor-surfe-barra]
+  linhaInferior: [orquestra-casaca, trilha-anchieta, biblioteca-cariacica]
+editorial: editorial-001
+```
+
+**O que aparece no site:** em produção, só edição `publicada` + matéria `aprovada`.
+No `npm run dev`, tudo aparece com selo de rascunho. Essa regra vive num lugar só:
+[src/lib/conteudo.ts](src/lib/conteudo.ts) — não filtre status em página nenhuma.
+
+---
+
+## Estrutura do projeto
+
+| Caminho | O que é |
+|---|---|
+| [src/config.ts](src/config.ts) | nome, contatos, ID do Google Analytics, token do Search Console |
+| [src/content.config.ts](src/content.config.ts) | schema das matérias e edições (as travas de qualidade) |
+| [src/data/cadernos.ts](src/data/cadernos.ts) | os seis cadernos fixos |
+| [src/lib/conteudo.ts](src/lib/conteudo.ts) | o que é visível, montagem da capa, relacionadas |
+| [src/lib/datas.ts](src/lib/datas.ts) | datas civis em pt-BR sem escorregão de fuso |
+| [src/lib/url.ts](src/lib/url.ts) | links com o base path `/enseadas` — **use sempre `rotas`/`href`/`abs`** |
+| [src/lib/seo.ts](src/lib/seo.ts) | JSON-LD (NewsArticle, Organization, breadcrumb) |
+| [src/styles/tokens.css](src/styles/tokens.css) | cores, fontes e medidas da marca |
+| `src/components/`, `src/pages/` | componentes e rotas |
+| `scripts/` | busca de foto, validador, calendário |
+
+**Armadilhas conhecidas:**
+- Nunca escreva `href="/materia/x"` à mão: some o `/enseadas` e o link quebra no ar.
+  Use `rotas.materia(slug)`.
+- Datas são **string** `'2026-08-21'`. Usar `Date` cru faz 21/08 virar 20/08 no fuso de Brasília.
+- Foto nova vai em `src/assets/fotos/` (otimizada no build), não em `public/`.
+
+---
+
+## Pós-publicação (uma vez, com o Douglas)
+
+1. **Google Search Console**: cadastrar `https://jdougdanzi.github.io/enseadas/` como
+   propriedade de prefixo de URL, escolher verificação por meta tag e colar o conteúdo em
+   `SEARCH_CONSOLE_TOKEN` ([src/config.ts](src/config.ts)). Depois enviar
+   `https://jdougdanzi.github.io/enseadas/sitemap-index.xml`.
+2. **Google Analytics 4**: criar propriedade em analytics.google.com, pegar o ID `G-XXXXXXXXXX`
+   e colar em `GA_MEASUREMENT_ID`. O script só é injetado no build de produção; em dev nunca.
+   Com o ID vazio, nenhum analytics é carregado e a página de privacidade se ajusta sozinha.
+3. Ambos exigem login na conta Google do Douglas — quem faz é ele, não o Claude.

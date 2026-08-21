@@ -1,0 +1,102 @@
+---
+/**
+ * Navegação dos cadernos em caixa-alta, entre hairlines.
+ * No mobile vira uma faixa com rolagem horizontal (nada de menu sanduíche —
+ * o jornal mostra os cadernos, não os esconde).
+ */
+import { CADERNOS } from '../data/cadernos';
+import { rotas } from '../lib/url';
+
+interface Props {
+  /** Slug do caderno ativo, ou 'capa'. */
+  ativo?: string;
+  /** Compacta a nav para os cabeçalhos das páginas internas. */
+  compacta?: boolean;
+}
+
+const { ativo = '', compacta = false } = Astro.props;
+---
+
+<nav class:list={['nav', { compacta }]} aria-label="Cadernos da revista">
+  <ul class="lista">
+    <li>
+      <a href={rotas.capa()} aria-current={ativo === 'capa' ? 'page' : undefined}>Capa</a>
+    </li>
+    {
+      CADERNOS.map((caderno) => (
+        <li>
+          <a
+            href={rotas.caderno(caderno.slug)}
+            aria-current={ativo === caderno.slug ? 'page' : undefined}
+          >
+            {caderno.nome}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lista {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    list-style: none;
+    margin: 0;
+    padding: 11px 0;
+    min-width: max-content;
+  }
+
+  .compacta .lista {
+    padding: 0;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  .lista a {
+    display: inline-block;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: var(--tracking-nav);
+    text-transform: uppercase;
+    color: var(--tinta);
+    white-space: nowrap;
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav:not(.compacta) .lista a {
+    font-size: 0.6875rem;
+  }
+
+  .lista a:hover,
+  .lista a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+    border-bottom-color: var(--fio);
+  }
+
+  .lista a[aria-current='page'] {
+    color: var(--azul);
+    border-bottom-color: var(--azul);
+  }
+
+  @media (max-width: 720px) {
+    .lista {
+      justify-content: flex-start;
+      gap: 18px;
+      padding-inline: 2px;
+    }
+  }
+</style>

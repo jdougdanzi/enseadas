@@ -1,0 +1,215 @@
+---
+/**
+ * Página de matéria (Manual da Marca — Template 2 das Páginas Internas).
+ */
+import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeaderCompacto from '../../components/HeaderCompacto.astro';
+import BylineBar from '../../components/BylineBar.astro';
+import FotoMateria from '../../components/FotoMateria.astro';
+import TagsChips from '../../components/TagsChips.astro';
+import ListaFontes from '../../components/ListaFontes.astro';
+import LeiaTambem from '../../components/LeiaTambem.astro';
+import BadgeRascunho from '../../components/BadgeRascunho.astro';
+import CaixaDestaque from '../../components/CaixaDestaque.astro';
+import {
+  getMaterias,
+  getRelacionadas,
+  leituraMin,
+  ehRascunho,
+  type Materia,
+} from '../../lib/conteudo';
+import { getCaderno } from '../../data/cadernos';
+import { rotas, absAsset, abs } from '../../lib/url';
+import { artigo, trilha } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const materias = await getMaterias();
+  return materias
+    .filter((m) => m.data.tipo === 'materia')
+    .map((materia) => ({ params: { slug: materia.id }, props: { materia } }));
+}
+
+interface Props {
+  materia: Materia;
+}
+
+const { materia } = Astro.props;
+const { Content } = await render(materia);
+
+const caderno = getCaderno(materia.data.caderno ?? '');
+const caminho = `/materia/${materia.id}`;
+const relacionadas = await getRelacionadas(materia, 3);
+const leitura = leituraMin(materia);
+const palavras = (materia.body ?? '').trim().split(/\s+/).filter(Boolean).length;
+
+// Imagem de compartilhamento: recorte 1200x630 da foto da matéria, ou a padrão da marca.
+let imagemOg: string | undefined;
+if (materia.data.foto) {
+  const og = await getImage({
+    src: materia.data.foto.src,
+    width: 1200,
+    height: 630,
+    fit: 'cover',
+    format: 'jpg',
+  });
+  imagemOg = absAsset(og.src);
+}
+
+const jsonLd = [
+  artigo({
+    titulo: materia.data.titulo,
+    descricao: materia.data.linhaFina,
+    caminho,
+    data: materia.data.data,
+    autor: materia.data.autor,
+    secao: caderno?.nome,
+    tags: materia.data.tags,
+    imagem: imagemOg ?? abs('/og-padrao.png'),
+    palavras,
+  }),
+  trilha([
+    { nome: 'Capa', caminho: '/' },
+    ...(caderno
+      ? [{ nome: caderno.nome, caminho: `/caderno/${caderno.slug}` }]
+      : []),
+    { nome: materia.data.titulo, caminho },
+  ]),
+];
+---
+
+<BaseLayout
+  titulo={materia.data.titulo}
+  descricao={materia.data.linhaFina}
+  caminho={caminho}
+  imagem={imagemOg}
+  imagemAlt={materia.data.foto?.alt}
+  tipoOg="article"
+  publicadoEm={materia.data.data}
+  autor={materia.data.autor}
+  secao={caderno?.nome}
+  jsonLd={jsonLd}
+  semIndexacao={ehRascunho(materia)}
+>
+  <div class="container">
+    <HeaderCompacto data={materia.data.data} ativo={materia.data.caderno} />
+
+    <main id="conteudo">
+      <article>
+        <header class="cabeca">
+          <p class="kicker">
+            {
+              caderno ? (
+                <a href={rotas.caderno(caderno.slug)}>{caderno.nome}</a>
+              ) : (
+                'Opinião'
+              )
+            }
+            {materia.data.cidade && <> · {materia.data.cidade.toUpperCase()}</>}
+            {ehRascunho(materia) && <BadgeRascunho />}
+          </p>
+
+          <h1 class="manchete">{materia.data.titulo}</h1>
+          <p class="deck">{materia.data.linhaFina}</p>
+
+          <BylineBar
+            autor={materia.data.autor}
+            data={materia.data.data}
+            leitura={leitura}
+          />
+        </header>
+
+        {
+          materia.data.foto && (
+            <div class="abertura">
+              <FotoMateria
+                foto={materia.data.foto}
+                proporcao="3 / 2"
+                comLegenda
+                prioridade
+                sizes="(max-width: 940px) 100vw, 900px"
+              />
+            </div>
+          )
+        }
+
+        <div class="corpo">
+          <Content />
+        </div>
+
+        {
+          materia.data.tags.length > 0 && (
+            <div class="tags">
+              <TagsChips tags={materia.data.tags} />
+            </div>
+          )
+        }
+
+        <ListaFontes fontes={materia.data.fontes} />
+
+        <div class="compartilhar">
+          <CaixaDestaque
+            caminhoCompartilhar={caminho}
+            tituloCompartilhar={materia.data.titulo}
+          />
+        </div>
+      </article>
+
+      <LeiaTambem materias={relacionadas} />
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .cabeca {
+    max-width: var(--max-manchete);
+    margin: 0 auto;
+    padding-top: 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .cabeca .kicker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .manchete {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+    line-height: var(--lh-manchete);
+  }
+
+  .abertura {
+    max-width: var(--max-foto);
+    margin: 26px auto 0;
+  }
+
+  .corpo {
+    margin-top: 30px;
+  }
+
+  .tags {
+    max-width: var(--max-corpo);
+    margin: 26px auto 0;
+  }
+
+  .compartilhar {
+    max-width: var(--max-corpo);
+    margin: 26px auto 0;
+  }
+
+  @media (max-width: 720px) {
+    .cabeca {
+      padding-top: 26px;
+      gap: 13px;
+    }
+  }
+</style>

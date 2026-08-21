@@ -1,0 +1,177 @@
+---
+/**
+ * Política de privacidade — exigência da LGPD por causa do Google Analytics.
+ * O texto muda conforme o analytics esteja ativo ou não.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { SITE, GA_MEASUREMENT_ID } from '../config';
+import { edicaoCorrente } from '../lib/conteudo';
+import { trilha } from '../lib/seo';
+
+const edicao = await edicaoCorrente();
+const usaAnalytics = GA_MEASUREMENT_ID !== '';
+const descricao = `Como a ${SITE.nome} trata dados de quem visita o site.`;
+---
+
+<BaseLayout
+  titulo="Privacidade"
+  descricao={descricao}
+  caminho="/privacidade"
+  jsonLd={[
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Privacidade', caminho: '/privacidade' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Privacidade</h1>
+        <p class="deck">
+          O que coletamos, por quê, e o que você pode fazer a respeito.
+        </p>
+      </header>
+
+      <div class="texto">
+        <section>
+          <h2>O essencial</h2>
+          <p>
+            A {SITE.nome} é um site estático de leitura. Não pedimos cadastro, não
+            temos área de login, não vendemos nem compartilhamos dados com
+            terceiros para fins comerciais.
+          </p>
+        </section>
+
+        <section>
+          <h2>Dados de navegação</h2>
+          {
+            usaAnalytics ? (
+              <>
+                <p>
+                  Usamos o Google Analytics 4 para saber quantas pessoas leem a
+                  revista e quais matérias despertam mais interesse. A ferramenta
+                  registra dados de uso de forma agregada — páginas visitadas,
+                  tempo de leitura, tipo de dispositivo, região aproximada — com o
+                  endereço IP anonimizado. Não conseguimos identificar quem você é
+                  a partir desses dados.
+                </p>
+                <p>
+                  Se preferir não ser contabilizado, você pode instalar o
+                  <a
+                    href="https://tools.google.com/dlpage/gaoptout"
+                    rel="noopener nofollow"
+                    target="_blank"
+                    >complemento de desativação do Google Analytics</a
+                  >, usar o bloqueio de rastreadores do seu navegador ou ativar a
+                  navegação privada.
+                </p>
+              </>
+            ) : (
+              <p>
+                No momento não usamos nenhuma ferramenta de análise de audiência.
+                Nenhum dado de navegação é coletado por nós.
+              </p>
+            )
+          }
+        </section>
+
+        <section>
+          <h2>Hospedagem</h2>
+          <p>
+            O site é hospedado no GitHub Pages. Como todo servidor web, a
+            infraestrutura do GitHub registra requisições de acesso, conforme a
+            política de privacidade da própria empresa. Não temos acesso a esses
+            registros.
+          </p>
+        </section>
+
+        <section>
+          <h2>Conteúdo de terceiros</h2>
+          <p>
+            As fontes das matérias e os créditos de fotografia levam a sites de
+            terceiros, que têm suas próprias políticas. As fontes tipográficas são
+            servidas pelo nosso próprio site — nenhuma requisição sai para
+            servidores de fontes externas.
+          </p>
+        </section>
+
+        <section>
+          <h2>Pessoas nas matérias</h2>
+          <p>
+            Só publicamos informações sobre pessoas quando elas já são públicas e
+            constam das fontes citadas na matéria. Se você aparece em algum texto e
+            quer corrigir, complementar ou pedir a retirada de uma informação,
+            escreva para
+            <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a> — a
+            solicitação é analisada e respondida.
+          </p>
+        </section>
+
+        <section>
+          <h2>Seus direitos</h2>
+          <p>
+            Pela Lei Geral de Proteção de Dados (Lei 13.709/2018), você pode pedir
+            informação sobre o tratamento dos seus dados, correção ou exclusão.
+            Fale conosco em
+            <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a>.
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--max-manchete);
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .texto {
+    max-width: var(--max-corpo);
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .texto h2 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--azul);
+    margin-bottom: 12px;
+  }
+
+  .texto p {
+    font-family: var(--serif-texto);
+    font-size: 1.0625rem;
+    line-height: 1.68;
+  }
+
+  .texto p + p {
+    margin-top: 1em;
+  }
+
+  .texto a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>

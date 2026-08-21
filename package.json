@@ -1,0 +1,29 @@
+{
+  "name": "enseadas",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EnseadaS — Diário de Boas Notícias · Espírito Santo. Revista eletrônica semanal.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "validar": "node scripts/validar-edicao.mjs",
+    "foto": "node scripts/wikimedia.mjs",
+    "proxima-sexta": "node scripts/proxima-sexta.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/archivo": "^5.2.6",
+    "@fontsource/libre-caslon-text": "^5.2.6",
+    "@fontsource/playfair-display": "^5.2.6",
+    "astro": "^7.2.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,45 @@
+---
+/**
+ * Selo de redação — aparece SOMENTE no `astro dev`.
+ * Serve para o editor nunca confundir prévia com o que está no ar.
+ */
+import { MODO_REDACAO } from '../lib/conteudo';
+
+interface Props {
+  texto?: string;
+  /** Fixa o selo no canto da tela (usar uma vez por página). */
+  flutuante?: boolean;
+}
+
+const { texto = 'Rascunho', flutuante = false } = Astro.props;
+---
+
+{
+  MODO_REDACAO && (
+    <span class:list={['selo', { flutuante }]} class="nao-imprimir">
+      {texto}
+    </span>
+  )
+}
+
+<style>
+  .selo {
+    display: inline-block;
+    background: var(--azul);
+    color: var(--papel);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+  }
+
+  .flutuante {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    z-index: 90;
+    background: var(--tinta);
+  }
+</style>

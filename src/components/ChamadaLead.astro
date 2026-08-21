@@ -1,0 +1,88 @@
+---
+/**
+ * Chamada principal (lead) da capa ou da capa de caderno:
+ * kicker, manchete grande, linha-fina, foto e assinatura.
+ */
+import FotoMateria from './FotoMateria.astro';
+import BadgeRascunho from './BadgeRascunho.astro';
+import { kicker, ehRascunho, type Materia } from '../lib/conteudo';
+import { rotas } from '../lib/url';
+import { dataPorExtenso } from '../lib/datas';
+
+interface Props {
+  materia: Materia;
+  /** Nível do heading no documento: h2 na capa, h2 no caderno. */
+  nivel?: 'h1' | 'h2' | 'h3';
+  proporcao?: string;
+  /** A foto do lead da capa é o LCP da página. */
+  prioridade?: boolean;
+}
+
+const { materia, nivel = 'h2', proporcao = '3 / 2', prioridade = false } = Astro.props;
+const Titulo = nivel;
+const url = rotas.materia(materia.id);
+---
+
+<article class="lead">
+  <p class="kicker">
+    {kicker(materia)}
+    {ehRascunho(materia) && <BadgeRascunho />}
+  </p>
+
+  <Titulo class="manchete">
+    <a href={url}>{materia.data.titulo}</a>
+  </Titulo>
+
+  <p class="deck">{materia.data.linhaFina}</p>
+
+  <a class="foto" href={url} tabindex="-1" aria-hidden="true">
+    <FotoMateria
+      foto={materia.data.foto}
+      proporcao={proporcao}
+      prioridade={prioridade}
+      sizes="(max-width: 860px) 100vw, 700px"
+      notaPlaceholder="Foto em apuração"
+    />
+  </a>
+
+  <p class="byline">
+    Por {materia.data.autor} · {dataPorExtenso(materia.data.data)}
+  </p>
+</article>
+
+<style>
+  .lead {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .manchete {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-capa);
+    line-height: var(--lh-manchete);
+  }
+
+  .manchete a {
+    color: var(--tinta);
+  }
+
+  .manchete a:hover,
+  .manchete a:focus-visible {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .foto {
+    display: block;
+    margin-top: 2px;
+  }
+</style>

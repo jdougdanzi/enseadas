@@ -1,0 +1,63 @@
+---
+/**
+ * Barra de assinatura entre fios, com pontinhos azuis separando os itens.
+ * "POR DOUGLAS DANZI · 21 DE AGOSTO DE 2026 · LEITURA: 6 MIN"
+ */
+import { dataPorExtenso, instante } from '../lib/datas';
+
+interface Props {
+  autor: string;
+  data: string;
+  leitura?: number;
+}
+
+const { autor, data, leitura } = Astro.props;
+
+const itens = [
+  `Por ${autor}`,
+  dataPorExtenso(data),
+  ...(leitura ? [`Leitura: ${leitura} min`] : []),
+];
+---
+
+<div class="barra">
+  {
+    itens.map((item, i) => (
+      <>
+        {i > 0 && <span class="ponto" aria-hidden="true" />}
+        {i === 1 ? (
+          <time datetime={instante(data).toISOString()}>{item}</time>
+        ) : (
+          <span>{item}</span>
+        )}
+      </>
+    ))
+  }
+</div>
+
+<style>
+  .barra {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    border-top: var(--fio-fino) solid var(--fio);
+    border-bottom: var(--fio-fino) solid var(--fio);
+    padding: 10px 0;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: var(--t-rotulo);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cinza-rotulo);
+  }
+
+  .ponto {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--azul);
+    flex: none;
+  }
+</style>

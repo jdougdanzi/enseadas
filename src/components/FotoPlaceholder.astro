@@ -1,0 +1,60 @@
+---
+/**
+ * Espaço de foto quando a matéria ainda não tem imagem com licença livre.
+ * Monograma da marca sobre azul-papel — mantém o ritmo da página sem mentir sobre o conteúdo.
+ */
+interface Props {
+  /** Proporção CSS: '3 / 2', '16 / 9'… */
+  proporcao?: string;
+  /** Texto opcional exibido sob o monograma (só na redação). */
+  nota?: string;
+}
+
+const { proporcao = '3 / 2', nota } = Astro.props;
+---
+
+<div class="placeholder" style={`aspect-ratio:${proporcao}`} role="presentation">
+  <span class="monograma" aria-hidden="true">E</span>
+  {nota && <span class="nota">{nota}</span>}
+</div>
+
+<style>
+  .placeholder {
+    width: 100%;
+    background: var(--azul-papel);
+    border: var(--fio-fino) solid var(--fio);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .monograma {
+    width: 46px;
+    height: 46px;
+    background: var(--azul);
+    color: var(--papel);
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px;
+    opacity: 0.35;
+  }
+
+  .nota {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--azul);
+    opacity: 0.7;
+    text-align: center;
+    padding-inline: 12px;
+  }
+</style>

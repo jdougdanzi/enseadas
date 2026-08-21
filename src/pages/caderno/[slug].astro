@@ -1,0 +1,185 @@
+---
+/**
+ * Capa de caderno (Manual da Marca — Template 1 das Páginas Internas):
+ * abertura numerada, lead + coluna lateral, e a linha de quatro matérias.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeaderCompacto from '../../components/HeaderCompacto.astro';
+import AberturaCaderno from '../../components/AberturaCaderno.astro';
+import ChamadaLead from '../../components/ChamadaLead.astro';
+import ChamadaLateral from '../../components/ChamadaLateral.astro';
+import CartaoMateria from '../../components/CartaoMateria.astro';
+import CaixaDestaque from '../../components/CaixaDestaque.astro';
+import { CADERNOS, type CadernoDefinido } from '../../data/cadernos';
+import { getMateriasDoCaderno, edicaoCorrente } from '../../lib/conteudo';
+import { colecao, trilha } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return CADERNOS.map((caderno) => ({
+    params: { slug: caderno.slug },
+    props: { caderno },
+  }));
+}
+
+interface Props {
+  caderno: CadernoDefinido;
+}
+
+const { caderno } = Astro.props;
+const materias = await getMateriasDoCaderno(caderno.slug);
+const edicao = await edicaoCorrente();
+
+const lead = materias[0];
+const laterais = materias.slice(1, 4);
+const linha = materias.slice(4, 8);
+const caminho = `/caderno/${caderno.slug}`;
+
+const jsonLd = [
+  colecao(`${caderno.nome} — EnseadaS`, caderno.descricao, caminho),
+  trilha([
+    { nome: 'Capa', caminho: '/' },
+    { nome: caderno.nome, caminho },
+  ]),
+];
+---
+
+<BaseLayout
+  titulo={caderno.nome}
+  descricao={caderno.descricao}
+  caminho={caminho}
+  jsonLd={jsonLd}
+>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} ativo={caderno.slug} />
+
+    <main id="conteudo">
+      <AberturaCaderno caderno={caderno} />
+
+      {
+        lead ? (
+          <>
+            <div class="principal">
+              <div class="coluna-lead">
+                <ChamadaLead materia={lead} nivel="h2" proporcao="16 / 9" prioridade />
+              </div>
+
+              <div class="fio-vertical" aria-hidden="true" />
+
+              <div class="coluna-lateral">
+                {laterais.map((materia, i) => (
+                  <div class:list={['item-lateral', { primeiro: i === 0 }]}>
+                    <ChamadaLateral materia={materia} />
+                  </div>
+                ))}
+
+                <div class="rodape-lateral">
+                  <CaixaDestaque
+                    titulo={caderno.nome}
+                    texto={caderno.descricao}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {linha.length > 0 && (
+              <div class="fio-tinta linha">
+                {linha.map((materia) => (
+                  <CartaoMateria materia={materia} />
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <p class="vazio">
+            Este caderno ainda não tem matérias publicadas. Volte na próxima
+            sexta-feira.
+          </p>
+        )
+      }
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .principal {
+    display: grid;
+    grid-template-columns: 1.7fr 1px 1fr;
+    gap: 28px;
+    border-top: var(--fio-fino) solid var(--tinta);
+    padding: 26px 0;
+  }
+
+  .coluna-lateral {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .item-lateral {
+    padding: 16px 0;
+    border-bottom: var(--fio-fino) solid var(--fio);
+  }
+
+  .item-lateral.primeiro {
+    padding-top: 0;
+  }
+
+  .rodape-lateral {
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .linha {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--calha);
+    padding: 20px 0 6px;
+  }
+
+  .vazio {
+    border-top: var(--fio-fino) solid var(--fio);
+    margin-top: 26px;
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--serif-texto);
+    font-style: italic;
+    font-size: 1.0625rem;
+    color: var(--cinza-rotulo);
+  }
+
+  @media (max-width: 980px) {
+    .linha {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px var(--calha);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .principal {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-bottom: 0;
+    }
+
+    .fio-vertical {
+      display: none;
+    }
+
+    .coluna-lateral {
+      border-top: var(--fio-fino) solid var(--tinta);
+      margin-top: 26px;
+      padding-top: 6px;
+    }
+
+    .rodape-lateral {
+      padding-bottom: 22px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .linha {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+  }
+</style>

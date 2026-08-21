@@ -1,0 +1,68 @@
+---
+/**
+ * Capa de uma edição do arquivo. Mesmo desenho da home.
+ * A edição corrente aponta o canonical para "/" — evita conteúdo duplicado no Google.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Masthead from '../../components/Masthead.astro';
+import CapaEdicao from '../../components/CapaEdicao.astro';
+import {
+  getEdicoes,
+  montarCapa,
+  getEditorialDaEdicao,
+  edicaoCorrente,
+  type Edicao,
+} from '../../lib/conteudo';
+import { numeroEdicao, dataPorExtenso } from '../../lib/datas';
+import { colecao, trilha } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const edicoes = await getEdicoes();
+  return edicoes.map((edicao) => ({
+    params: { numero: numeroEdicao(edicao.data.numero) },
+    props: { edicao },
+  }));
+}
+
+interface Props {
+  edicao: Edicao;
+}
+
+const { edicao } = Astro.props;
+const capa = await montarCapa(edicao);
+const editorial = await getEditorialDaEdicao(edicao.data.numero);
+const corrente = await edicaoCorrente();
+const ehCorrente = corrente?.data.numero === edicao.data.numero;
+
+const rotulo = `Edição Nº ${numeroEdicao(edicao.data.numero)}`;
+const caminho = ehCorrente ? '/' : `/edicao/${numeroEdicao(edicao.data.numero)}`;
+const descricao = capa.manchete
+  ? `${capa.manchete.data.titulo} — ${capa.manchete.data.linhaFina}`
+  : `${rotulo} da EnseadaS, de ${dataPorExtenso(edicao.data.dataFechamento)}.`;
+---
+
+<BaseLayout
+  titulo={rotulo}
+  descricao={descricao}
+  caminho={caminho}
+  jsonLd={[
+    colecao(`EnseadaS — ${rotulo}`, descricao, caminho),
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Arquivo', caminho: '/arquivo' },
+      { nome: rotulo, caminho },
+    ]),
+  ]}
+>
+  <div class="container">
+    <Masthead
+      data={edicao.data.dataFechamento}
+      edicao={edicao.data.numero}
+      ativo="capa"
+    />
+    <main id="conteudo">
+      <h2 class="apenas-leitores">{rotulo}</h2>
+      <CapaEdicao capa={capa} temEditorial={Boolean(editorial)} />
+    </main>
+  </div>
+</BaseLayout>

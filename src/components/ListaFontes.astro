@@ -1,0 +1,74 @@
+---
+/**
+ * Fontes consultadas na apuração, ao pé da matéria.
+ * É o que sustenta a promessa editorial: nada aqui é inventado.
+ */
+interface Fonte {
+  titulo: string;
+  url: string;
+  veiculo?: string;
+  acessoEm?: string;
+}
+
+interface Props {
+  fontes: Fonte[];
+}
+
+const { fontes } = Astro.props;
+---
+
+{
+  fontes.length > 0 && (
+    <section class="fontes" aria-labelledby="fontes-titulo">
+      <h2 class="kicker" id="fontes-titulo">
+        Fontes desta matéria
+      </h2>
+      <ol>
+        {fontes.map((f) => (
+          <li>
+            <a href={f.url} rel="noopener nofollow" target="_blank">
+              {f.titulo}
+            </a>
+            {f.veiculo && <span class="veiculo"> · {f.veiculo}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+<style>
+  .fontes {
+    max-width: var(--max-corpo);
+    margin: 34px auto 0;
+    border-top: var(--fio-fino) solid var(--fio);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 1.2em;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  li {
+    font-family: var(--sans);
+    font-size: 0.78125rem;
+    line-height: 1.55;
+    color: var(--cinza-texto);
+  }
+
+  li a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .veiculo {
+    color: var(--cinza-rotulo);
+  }
+</style>

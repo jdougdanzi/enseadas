@@ -1,0 +1,175 @@
+---
+/**
+ * Todas as edições já publicadas, da mais nova para a mais antiga.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import {
+  getEdicoes,
+  montarCapa,
+  getMateriasDaEdicao,
+  edicaoCorrente,
+} from '../lib/conteudo';
+import { numeroEdicao, dataPorExtenso } from '../lib/datas';
+import { rotas } from '../lib/url';
+import { colecao, trilha } from '../lib/seo';
+
+const edicoes = await getEdicoes();
+const corrente = await edicaoCorrente();
+
+const linhas = await Promise.all(
+  edicoes.map(async (edicao) => {
+    const capa = await montarCapa(edicao);
+    const materias = await getMateriasDaEdicao(edicao.data.numero);
+    return {
+      numero: edicao.data.numero,
+      data: edicao.data.dataFechamento,
+      manchete: capa.manchete?.data.titulo,
+      total: materias.filter((m) => m.data.tipo === 'materia').length,
+      ehCorrente: corrente?.data.numero === edicao.data.numero,
+    };
+  }),
+);
+
+const descricao =
+  'Todas as edições da EnseadaS, a revista semanal de boas notícias do Espírito Santo.';
+---
+
+<BaseLayout
+  titulo="Edições anteriores"
+  descricao={descricao}
+  caminho="/arquivo"
+  jsonLd={[
+    colecao('Arquivo de edições — EnseadaS', descricao, '/arquivo'),
+    trilha([
+      { nome: 'Capa', caminho: '/' },
+      { nome: 'Arquivo', caminho: '/arquivo' },
+    ]),
+  ]}
+>
+  <div class="container">
+    <HeaderCompacto data={corrente?.data.dataFechamento} />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <h1 class="titulo">Edições anteriores</h1>
+        <p class="deck">
+          Uma edição por semana, sempre na sexta-feira. Aqui ficam todas.
+        </p>
+      </header>
+
+      {
+        linhas.length > 0 ? (
+          <ol class="lista">
+            {linhas.map((linha) => (
+              <li class="edicao">
+                <a href={linha.ehCorrente ? rotas.capa() : rotas.edicao(linha.numero)}>
+                  <span class="numero">Nº {numeroEdicao(linha.numero)}</span>
+                  <span class="miolo">
+                    <span class="manchete">
+                      {linha.manchete ?? 'Edição em preparação'}
+                    </span>
+                    <span class="rotulo">
+                      {dataPorExtenso(linha.data)} · {linha.total}{' '}
+                      {linha.total === 1 ? 'matéria' : 'matérias'}
+                      {linha.ehCorrente ? ' · edição atual' : ''}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="vazio">A primeira edição ainda está sendo preparada.</p>
+        )
+      }
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--fio-grosso) solid var(--tinta);
+  }
+
+  .edicao {
+    border-bottom: var(--fio-fino) solid var(--fio);
+  }
+
+  .edicao a {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    padding: 20px 0;
+    color: var(--tinta);
+  }
+
+  .edicao a:hover,
+  .edicao a:focus-visible {
+    text-decoration: none;
+  }
+
+  .edicao a:hover .manchete,
+  .edicao a:focus-visible .manchete {
+    color: var(--azul);
+  }
+
+  .numero {
+    flex: none;
+    width: 84px;
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--azul);
+  }
+
+  .miolo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .manchete {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-3);
+    line-height: 1.3;
+  }
+
+  .vazio {
+    border-top: var(--fio-fino) solid var(--fio);
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--serif-texto);
+    font-style: italic;
+    color: var(--cinza-rotulo);
+  }
+
+  @media (max-width: 560px) {
+    .edicao a {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .numero {
+      width: auto;
+    }
+  }
+</style>

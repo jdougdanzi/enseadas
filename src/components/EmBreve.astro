@@ -1,0 +1,155 @@
+---
+/**
+ * Estado inicial do site: a marca já está no ar, a primeira edição vem aí.
+ * Também protege a home de quebrar quando nenhuma edição foi publicada.
+ */
+import Logo from './Logo.astro';
+import { CADERNOS } from '../data/cadernos';
+import { SITE } from '../config';
+import { rotas } from '../lib/url';
+
+interface Props {
+  /** Data de estreia, se já houver edição aberta. */
+  estreia?: string;
+}
+
+const { estreia } = Astro.props;
+---
+
+<div class="em-breve">
+  <div class="fio-triplo"></div>
+
+  <div class="marca">
+    <Logo tamanho={58} comTagline comLink={false} comoTitulo />
+  </div>
+
+  <div class="fio-tinta texto">
+    <p class="chamada">
+      Toda sexta-feira, seis cadernos com as coisas boas do Espírito Santo.
+    </p>
+    <p class="explicacao">
+      {
+        estreia
+          ? 'A primeira edição está sendo fechada na redação.'
+          : 'A primeira edição está a caminho.'
+      }
+      {' '}Enquanto isso, conheça os cadernos que vão compor a revista.
+    </p>
+  </div>
+
+  <ul class="cadernos">
+    {
+      CADERNOS.map((c) => (
+        <li>
+          <a href={rotas.caderno(c.slug)}>
+            <span class="numero" aria-hidden="true">
+              Nº{c.numero}
+            </span>
+            <span class="nome">{c.nome}</span>
+            <span class="descricao">{c.descricao}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="contato">
+    Tem uma boa notícia do Espírito Santo para contar?
+    <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a>
+  </p>
+</div>
+
+<style>
+  .em-breve {
+    padding-top: 14px;
+  }
+
+  .marca {
+    display: flex;
+    justify-content: center;
+    padding: 44px 0;
+  }
+
+  .texto {
+    text-align: center;
+    padding: 26px 0 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .chamada {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-2);
+    line-height: 1.25;
+    max-width: 26ch;
+  }
+
+  .explicacao {
+    font-family: var(--serif-texto);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--cinza-texto);
+    max-width: 52ch;
+  }
+
+  .cadernos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 22px;
+  }
+
+  .cadernos a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: var(--fio-grosso) solid var(--tinta);
+    padding-top: 16px;
+    color: var(--tinta);
+    height: 100%;
+  }
+
+  .cadernos a:hover,
+  .cadernos a:focus-visible {
+    text-decoration: none;
+    border-top-color: var(--azul);
+  }
+
+  .numero {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: 1.375rem;
+    line-height: 1;
+    color: var(--azul);
+  }
+
+  .nome {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.24em;
+  }
+
+  .descricao {
+    font-family: var(--sans);
+    font-size: 0.78125rem;
+    line-height: 1.6;
+    color: var(--cinza-rotulo);
+  }
+
+  .contato {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: var(--fio-fino) solid var(--fio);
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--cinza-rotulo);
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+/**
+ * Rodapé com fio duplo, cadernos, serviços e a nota de transparência editorial.
+ */
+import { CADERNOS } from '../data/cadernos';
+import { SITE } from '../config';
+import { rotas } from '../lib/url';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape">
+  <div class="container">
+    <div class="fio-triplo"></div>
+
+    <div class="colunas">
+      <div class="coluna marca">
+        <p class="nome">Enseada<span class="s">S</span></p>
+        <p class="tagline">{SITE.tagline}</p>
+        <p class="nota">
+          Revista eletrônica semanal. Toda matéria é apurada em fontes públicas,
+          citadas ao pé do texto, e produzida com apoio de inteligência artificial
+          sob direção editorial humana.
+        </p>
+      </div>
+
+      <nav class="coluna" aria-label="Cadernos">
+        <p class="titulo-coluna">Cadernos</p>
+        <ul>
+          {
+            CADERNOS.map((c) => (
+              <li>
+                <a href={rotas.caderno(c.slug)}>{c.nome}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="coluna" aria-label="A revista">
+        <p class="titulo-coluna">A revista</p>
+        <ul>
+          <li><a href={rotas.arquivo()}>Edições anteriores</a></li>
+          <li><a href={rotas.expediente()}>Expediente</a></li>
+          <li><a href={rotas.privacidade()}>Privacidade</a></li>
+          <li><a href={rotas.feed()}>Assinar o RSS</a></li>
+        </ul>
+      </nav>
+
+      <div class="coluna">
+        <p class="titulo-coluna">Fale com a redação</p>
+        <ul>
+          <li><a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a></li>
+          <li><a href={`mailto:${SITE.emailCartas}`}>{SITE.emailCartas}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="fio-tinta creditos">
+      <span>© {ano} {SITE.nome} · {SITE.taglineCurta}</span>
+      <span>Feito em {SITE.cidadeSede}, Espírito Santo</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    margin-top: 64px;
+    padding-bottom: 48px;
+  }
+
+  .colunas {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: var(--calha);
+    padding: 26px 0 30px;
+  }
+
+  .coluna {
+    min-width: 0;
+  }
+
+  .nome {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: 1.375rem;
+    line-height: 1;
+    color: var(--azul);
+    margin: 0 0 6px;
+  }
+
+  .s {
+    font-size: 1.22em;
+  }
+
+  .tagline {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--azul);
+    margin: 0 0 14px;
+  }
+
+  .nota {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--cinza-rotulo);
+    max-width: 42ch;
+    margin: 0;
+  }
+
+  .titulo-coluna {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0 0 12px;
+  }
+
+  .coluna ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .coluna li + li {
+    margin-top: 8px;
+  }
+
+  .coluna li a {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: var(--cinza-texto);
+  }
+
+  .coluna li a:hover,
+  .coluna li a:focus-visible {
+    color: var(--azul);
+  }
+
+  .creditos {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 14px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cinza-rotulo);
+  }
+
+  @media (max-width: 860px) {
+    .colunas {
+      grid-template-columns: 1fr 1fr;
+      gap: 28px var(--calha);
+    }
+
+    .marca {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .colunas {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

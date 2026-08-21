@@ -1,0 +1,31 @@
+---
+/**
+ * Chips de assunto ao fim da matéria, em azul-papel.
+ */
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul class="tags" aria-label="Assuntos">
+      {tags.map((tag) => (
+        <li class="chip">{tag}</li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

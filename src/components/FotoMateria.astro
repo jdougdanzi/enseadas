@@ -1,0 +1,114 @@
+---
+/**
+ * Foto de uma matéria, com legenda e crédito de licença.
+ *
+ * REGRA: nenhuma foto aparece sem crédito e licença — é exigência das licenças
+ * livres do Wikimedia Commons (CC BY / CC BY-SA) e do nosso manual de redação.
+ * Sem foto, entra o placeholder da marca.
+ */
+import { Image } from 'astro:assets';
+import FotoPlaceholder from './FotoPlaceholder.astro';
+
+type Foto = {
+  src: ImageMetadata;
+  alt: string;
+  legenda: string;
+  credito: string;
+  licenca: string;
+  fonteUrl: string;
+};
+
+interface Props {
+  foto?: Foto;
+  proporcao?: string;
+  /** Exibe legenda e crédito sob a imagem. */
+  comLegenda?: boolean;
+  /** Dica de largura para o srcset. */
+  sizes?: string;
+  larguras?: number[];
+  /** A primeira imagem da página não deve ser lazy (LCP). */
+  prioridade?: boolean;
+  notaPlaceholder?: string;
+}
+
+const {
+  foto,
+  proporcao = '3 / 2',
+  comLegenda = false,
+  sizes = '(max-width: 900px) 100vw, 900px',
+  larguras = [480, 800, 1200, 1600],
+  prioridade = false,
+  notaPlaceholder,
+} = Astro.props;
+---
+
+{
+  foto ? (
+    <figure class="figura">
+      <div class="moldura" style={`aspect-ratio:${proporcao}`}>
+        <Image
+          src={foto.src}
+          alt={foto.alt}
+          widths={larguras}
+          sizes={sizes}
+          loading={prioridade ? 'eager' : 'lazy'}
+          fetchpriority={prioridade ? 'high' : 'auto'}
+          decoding="async"
+        />
+      </div>
+      {comLegenda && (
+        <figcaption class="legenda">
+          {foto.legenda}{' '}
+          <span class="credito">
+            Foto: {foto.credito} —{' '}
+            <a href={foto.fonteUrl} rel="noopener nofollow" target="_blank">
+              {foto.licenca}
+            </a>
+          </span>
+        </figcaption>
+      )}
+    </figure>
+  ) : (
+    <FotoPlaceholder proporcao={proporcao} nota={notaPlaceholder} />
+  )
+}
+
+<style>
+  .figura {
+    margin: 0;
+  }
+
+  .moldura {
+    width: 100%;
+    overflow: hidden;
+    background: var(--azul-papel);
+  }
+
+  .moldura :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .legenda {
+    margin-top: 8px;
+    font-family: var(--sans);
+    font-size: var(--t-legenda);
+    line-height: 1.5;
+    color: var(--cinza-texto);
+  }
+
+  .credito {
+    color: var(--cinza-rotulo);
+  }
+
+  .credito a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .credito a:hover {
+    color: var(--azul);
+  }
+</style>

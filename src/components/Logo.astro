@@ -1,0 +1,177 @@
+---
+/**
+ * Assinatura da marca (Manual da Marca, seção 01) — não redesenhar.
+ * Bloco E quadrado + wordmark "Enseada" com o S final 22% maior + linha de apoio.
+ */
+import { SITE } from '../config';
+import { rotas } from '../lib/url';
+
+interface Props {
+  /** Lado do bloco E, em px. O resto da assinatura escala a partir dele. */
+  tamanho?: number;
+  /** Exibe a linha "DIÁRIO DE BOAS NOTÍCIAS · ES" sob o wordmark. */
+  comTagline?: boolean;
+  /** No masthead da capa a linha vem por extenso: "· ESPÍRITO SANTO". */
+  taglineCompleta?: boolean;
+  /** Versão negativa, para uso sobre fundo azul. */
+  negativo?: boolean;
+  /** Envolve a assinatura num link para a capa. */
+  comLink?: boolean;
+  /** Renderiza o nome como <h1> (usar apenas no masthead da capa). */
+  comoTitulo?: boolean;
+}
+
+const {
+  tamanho = 46,
+  comTagline = false,
+  taglineCompleta = false,
+  negativo = false,
+  comLink = true,
+  comoTitulo = false,
+} = Astro.props;
+
+const textoTagline = taglineCompleta ? SITE.tagline : SITE.taglineCurta;
+
+const corMarca = negativo ? 'var(--papel)' : 'var(--azul)';
+const corBlocoFundo = negativo ? 'var(--papel)' : 'var(--azul)';
+const corBlocoLetra = negativo ? 'var(--azul)' : 'var(--papel)';
+
+const estilo = [
+  `--logo-lado:${tamanho}px`,
+  `--logo-cor:${corMarca}`,
+  `--logo-bloco-fundo:${corBlocoFundo}`,
+  `--logo-bloco-letra:${corBlocoLetra}`,
+].join(';');
+
+const Nome = comoTitulo ? 'h1' : 'span';
+---
+
+<div class="logo" style={estilo}>
+  <a
+    class="logo-link"
+    href={rotas.capa()}
+    aria-label={`${SITE.nome} — ${SITE.tagline}`}
+    data-sem-link={comLink ? undefined : 'true'}
+  >
+    <span class="bloco" aria-hidden="true">E</span>
+    <span class="assinatura">
+      <Nome class="wordmark">Enseada<span class="s-final">S</span></Nome>
+      {
+        comTagline && (
+          <span class="tagline">
+            <span class="tagline-fio" aria-hidden="true" />
+            <span class="tagline-texto">{textoTagline}</span>
+            {
+              taglineCompleta && (
+                <span class="tagline-texto curta">{SITE.taglineCurta}</span>
+              )
+            }
+          </span>
+        )
+      }
+    </span>
+  </a>
+</div>
+
+<style>
+  .logo {
+    display: inline-block;
+  }
+
+  .logo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--logo-lado) * 0.28);
+    color: var(--logo-cor);
+    text-decoration: none;
+  }
+
+  .logo-link:hover,
+  .logo-link:focus-visible {
+    color: var(--logo-cor);
+    text-decoration: none;
+    opacity: 0.82;
+  }
+
+  /* Quando a assinatura já está dentro de um contexto de link (masthead da capa),
+     desativamos a navegação sem mudar o desenho. */
+  .logo-link[data-sem-link] {
+    pointer-events: none;
+  }
+
+  .bloco {
+    flex: none;
+    width: var(--logo-lado);
+    height: var(--logo-lado);
+    background: var(--logo-bloco-fundo);
+    color: var(--logo-bloco-letra);
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: calc(var(--logo-lado) * 0.7);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: calc(var(--logo-lado) * 0.07);
+  }
+
+  .assinatura {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--logo-lado) * 0.07);
+  }
+
+  .wordmark {
+    margin: 0;
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: calc(var(--logo-lado) * 0.57);
+    line-height: 1;
+    color: var(--logo-cor);
+    white-space: nowrap;
+  }
+
+  /* O plural das enseadas capixabas: S final 22% maior. */
+  .s-final {
+    font-size: 1.22em;
+  }
+
+  .tagline {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--logo-lado) * 0.17);
+  }
+
+  .tagline-fio {
+    display: block;
+    width: calc(var(--logo-lado) * 0.45);
+    height: 1px;
+    background: var(--logo-cor);
+    flex: none;
+  }
+
+  .tagline-texto {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: max(7.5px, calc(var(--logo-lado) * 0.175));
+    letter-spacing: 0.3em;
+    color: var(--logo-cor);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Em telas estreitas a linha por extenso não cabe: entra a versão curta. */
+  .tagline-texto.curta {
+    display: none;
+  }
+
+  @media (max-width: 620px) {
+    .tagline-texto:not(.curta) {
+      display: none;
+    }
+
+    .tagline-texto.curta {
+      display: inline;
+    }
+  }
+</style>

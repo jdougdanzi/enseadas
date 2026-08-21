@@ -1,0 +1,152 @@
+---
+/**
+ * Layout único da revista: cabeça de SEO, fontes, analytics e rodapé.
+ * Toda página passa por aqui — é o lugar que garante canonical, OG e JSON-LD.
+ */
+import '@fontsource/playfair-display/latin-700.css';
+import '@fontsource/playfair-display/latin-800.css';
+import '@fontsource/playfair-display/latin-900.css';
+import '@fontsource/playfair-display/latin-900-italic.css';
+import '@fontsource/playfair-display/latin-700-italic.css';
+import '@fontsource/libre-caslon-text/latin-400.css';
+import '@fontsource/libre-caslon-text/latin-400-italic.css';
+import '@fontsource/libre-caslon-text/latin-700.css';
+import '@fontsource/archivo/latin-400.css';
+import '@fontsource/archivo/latin-500.css';
+import '@fontsource/archivo/latin-600.css';
+import '@fontsource/archivo/latin-700.css';
+
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import Rodape from '../components/Rodape.astro';
+import BadgeRascunho from '../components/BadgeRascunho.astro';
+import { SITE, GA_MEASUREMENT_ID, SEARCH_CONSOLE_TOKEN } from '../config';
+import { abs, href } from '../lib/url';
+import { MODO_REDACAO } from '../lib/conteudo';
+
+interface Props {
+  titulo: string;
+  descricao?: string;
+  /** Caminho interno desta página, para canonical e OG. Ex.: '/materia/foo' */
+  caminho: string;
+  /** URL absoluta da imagem de compartilhamento. */
+  imagem?: string;
+  imagemAlt?: string;
+  /** 'article' nas matérias, 'website' nas demais. */
+  tipoOg?: 'website' | 'article';
+  publicadoEm?: string;
+  autor?: string;
+  secao?: string;
+  /** Objetos JSON-LD desta página. */
+  jsonLd?: Record<string, unknown>[];
+  /** Não indexar (páginas de erro). */
+  semIndexacao?: boolean;
+}
+
+const {
+  titulo,
+  descricao = SITE.descricao,
+  caminho,
+  imagem,
+  imagemAlt,
+  tipoOg = 'website',
+  publicadoEm,
+  autor,
+  secao,
+  jsonLd = [],
+  semIndexacao = false,
+} = Astro.props;
+
+const tituloCompleto = titulo === SITE.nome ? `${SITE.nome} — ${SITE.tagline}` : `${titulo} — ${SITE.nome}`;
+const canonical = abs(caminho);
+const imagemOg = imagem ?? abs('/og-padrao.png');
+const analiseAtiva = import.meta.env.PROD && GA_MEASUREMENT_ID !== '';
+---
+
+<!doctype html>
+<html lang={SITE.idioma}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#2B4FC7" />
+
+    {semIndexacao && <meta name="robots" content="noindex, follow" />}
+    {
+      SEARCH_CONSOLE_TOKEN !== '' && (
+        <meta name="google-site-verification" content={SEARCH_CONSOLE_TOKEN} />
+      )
+    }
+
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <link rel="apple-touch-icon" href={href('/apple-touch-icon.png')} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.nome} — ${SITE.tagline}`}
+      href={abs('/feed.xml')}
+    />
+
+    <meta property="og:type" content={tipoOg} />
+    <meta property="og:site_name" content={SITE.nome} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imagemOg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imagemAlt ?? `${SITE.nome} — ${SITE.tagline}`} />
+    {tipoOg === 'article' && publicadoEm && (
+      <meta property="article:published_time" content={publicadoEm} />
+    )}
+    {tipoOg === 'article' && autor && <meta property="article:author" content={autor} />}
+    {tipoOg === 'article' && secao && <meta property="article:section" content={secao} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descricao} />
+    <meta name="twitter:image" content={imagemOg} />
+
+    {
+      jsonLd.map((dados) => (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(dados)}
+        />
+      ))
+    }
+
+    {
+      analiseAtiva && (
+        <>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          />
+          <script is:inline define:vars={{ id: GA_MEASUREMENT_ID }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              window.dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', id, { anonymize_ip: true });
+          </script>
+        </>
+      )
+    }
+  </head>
+
+  <body>
+    <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <slot />
+    <Rodape />
+    {MODO_REDACAO && <BadgeRascunho texto="Modo redação" flutuante />}
+  </body>
+</html>
