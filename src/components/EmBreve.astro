@@ -20,7 +20,7 @@ const { estreia } = Astro.props;
   <div class="fio-triplo"></div>
 
   <div class="marca">
-    <Logo tamanho={58} comTagline comLink={false} comoTitulo />
+    <Logo tamanho={58} comTagline taglineCompleta comLink={false} comoTitulo />
   </div>
 
   <div class="fio-tinta texto">
@@ -54,7 +54,7 @@ const { estreia } = Astro.props;
   </ul>
 
   <p class="contato">
-    Tem uma boa notícia do Espírito Santo para contar?
+    Tem uma boa notícia do Espírito Santo para contar?{' '}
     <a href={`mailto:${SITE.emailRedacao}`}>{SITE.emailRedacao}</a>
   </p>
 </div>

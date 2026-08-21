@@ -54,24 +54,37 @@ autorização.
 
 ## 4. Publicar
 
+Duas etapas: o **código-fonte** vai para a branch `main`, o **site construído** vai para a
+branch `gh-pages`, de onde o GitHub Pages serve.
+
 ```bash
 git add -A
 git commit -m "Edição NNN (AAAA-MM-DD): <manchete>"
 git push
-gh run watch
+node scripts/publicar-site.mjs "Edição NNN (AAAA-MM-DD)"
 ```
+
+O `publicar-site.mjs` recusa publicar se o `dist/` estiver ausente, sem `index.html` ou sem
+`.nojekyll` — não tente contornar essas recusas, elas evitam site quebrado no ar.
 
 ## 5. Conferir no ar
 
-Depois que o Actions terminar:
+O GitHub leva de 30 segundos a 2 minutos. Acompanhe com:
+
+```bash
+gh api repos/jdougdanzi/enseadas/pages --jq .status   # "built" quando terminar
+```
+
+Depois:
 
 1. `https://jdougdanzi.github.io/enseadas/` mostra a nova edição?
 2. Uma matéria abre com foto e fontes?
 3. `https://jdougdanzi.github.io/enseadas/feed.xml` traz as novas matérias?
 4. Nenhuma URL quebrada por causa do base path?
 
-Relate o resultado com a URL clicável. Se o Actions falhar, mostre o log do erro e ofereça
-`git revert` — não fique tentando remendos no ar.
+Relate o resultado com a URL clicável. Deu errado? Corrija na origem, rode `npm run build` e
+publique de novo — o `gh-pages` é sempre substituído pelo `dist/` atual. Se o problema for de
+conteúdo, `git revert` no `main` e republique.
 
 ## 6. Depois
 

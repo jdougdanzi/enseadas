@@ -12,7 +12,9 @@
     "check": "astro check",
     "validar": "node scripts/validar-edicao.mjs",
     "foto": "node scripts/wikimedia.mjs",
-    "proxima-sexta": "node scripts/proxima-sexta.mjs"
+    "proxima-sexta": "node scripts/proxima-sexta.mjs",
+    "publicar-site": "node scripts/publicar-site.mjs",
+    "imagens": "node scripts/gerar-og.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

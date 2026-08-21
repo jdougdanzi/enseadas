@@ -30,7 +30,26 @@ npm run validar 1                    # confere a edição 001
 npm run validar 1 -- --publicar      # confere se pode ir ao ar
 npm run foto "termo de busca"        # procura foto livre no Wikimedia Commons
 npm run proxima-sexta -- --status    # panorama das edições
+npm run publicar-site -- "Edição 001" # envia o dist/ para o ar (só dentro do /publicar)
+npm run imagens                      # regera og-padrao.png e apple-touch-icon.png
 ```
+
+## Como o site vai ao ar
+
+Duas branches, dois papéis:
+
+- **`main`** guarda o código e o conteúdo (as matérias em markdown).
+- **`gh-pages`** guarda **só o site construído**. É de onde o GitHub Pages serve.
+
+O `/publicar` faz `git push` do fonte para `main` e roda `scripts/publicar-site.mjs`, que
+copia o `dist/` recém-construído para `gh-pages`. Nunca edite `gh-pages` à mão.
+
+`public/.nojekyll` é obrigatório: sem ele o GitHub ignora a pasta `_astro/` e o site vai ao ar
+sem estilo nenhum.
+
+> Se um dia o token do `gh` ganhar o escopo `workflow` (`gh auth refresh -s workflow`), dá
+> para migrar a publicação para o GitHub Actions. Hoje ela é local e direta, o que tem a
+> vantagem de publicar exatamente o `dist/` que acabou de ser validado.
 
 ---
 

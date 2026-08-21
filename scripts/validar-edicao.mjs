@@ -140,8 +140,17 @@ function lerEdicao(texto) {
 
     if (secao === 'capa' && dados.capa) {
       if (resto === '') {
+        // Lista em bloco: os itens vêm nas linhas seguintes, com "- ".
         dados.capa[chave] = dados.capa[chave] ?? [];
         listaAtual = dados.capa[chave];
+      } else if (resto.startsWith('[')) {
+        // Lista em linha: [um, outro]
+        dados.capa[chave] = resto
+          .replace(/^\[|\]$/g, '')
+          .split(',')
+          .map((item) => converter(item.trim()))
+          .filter((item) => item !== '');
+        listaAtual = null;
       } else {
         dados.capa[chave] = converter(resto);
         listaAtual = null;
