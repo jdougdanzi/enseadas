@@ -34,6 +34,14 @@ npm run publicar-site -- "Edição 001" # envia o dist/ para o ar (só dentro do
 npm run imagens                      # regera og-padrao.png e apple-touch-icon.png
 ```
 
+## Busca interna
+
+A busca (`/busca/`) usa o Pagefind: o índice nasce no `npm run build` (etapa `pagefind --site
+dist`) a partir das matérias e editoriais — só o que tem `data-pagefind-body`. Por isso **em
+`npm run dev` a busca não funciona** (a página avisa); para testá-la localmente:
+`npm run build && npm run preview`. Nada disso precisa de servidor: o índice são arquivos
+estáticos em `dist/pagefind/`, servidos pelo GitHub Pages.
+
 ## Como o site vai ao ar
 
 Duas branches, dois papéis:

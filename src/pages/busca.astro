@@ -1,0 +1,369 @@
+---
+/**
+ * Busca interna, servida pelo Pagefind: o índice é gerado no build a partir do
+ * conteúdo das matérias (só o que tem data-pagefind-body) e consultado inteiro
+ * no navegador — sem servidor, funciona no GitHub Pages.
+ *
+ * Em `astro dev` o índice não existe (ele nasce no `npm run build`); a página
+ * avisa em vez de quebrar. Para testar: npm run build && npm run preview.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderCompacto from '../components/HeaderCompacto.astro';
+import { edicaoCorrente } from '../lib/conteudo';
+import { href } from '../lib/url';
+
+const edicao = await edicaoCorrente();
+const descricao = 'Procure qualquer assunto nas matérias já publicadas pela EnseadaS.';
+
+// O script do Pagefind mora em /pagefind/ dentro do site publicado.
+const caminhoPagefind = href('/pagefind/pagefind.js');
+const base = href('/');
+---
+
+<BaseLayout titulo="Busca" descricao={descricao} caminho="/busca" semIndexacao>
+  <div class="container">
+    <HeaderCompacto data={edicao?.data.dataFechamento} ativo="busca" />
+
+    <main id="conteudo">
+      <header class="abertura">
+        <p class="kicker">A revista</p>
+        <h1 class="titulo">Busca</h1>
+        <p class="deck">
+          Procure um assunto, um lugar ou um nome em tudo o que já publicamos.
+        </p>
+      </header>
+
+      <search>
+        <form
+          class="formulario"
+          role="search"
+          data-busca
+          data-pagefind-src={caminhoPagefind}
+          data-base={base}
+        >
+          <label class="apenas-leitores" for="campo-busca">O que você procura?</label>
+          <input
+            id="campo-busca"
+            class="campo"
+            type="search"
+            name="q"
+            placeholder="moqueca, congo, Guarapari…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="botao" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="lupa">
+              <circle cx="10.5" cy="10.5" r="6"></circle>
+              <path d="M15 15l5.5 5.5"></path>
+            </svg>
+            Buscar
+          </button>
+        </form>
+      </search>
+
+      <p class="estado" id="estado-busca" role="status" aria-live="polite"></p>
+
+      <ol class="resultados" id="resultados-busca"></ol>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .abertura {
+    padding: 34px 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: var(--max-manchete);
+  }
+
+  .titulo {
+    font-family: var(--serif-titulo);
+    font-weight: 900;
+    font-size: var(--t-manchete-materia);
+  }
+
+  .formulario {
+    display: flex;
+    gap: 10px;
+    max-width: var(--max-manchete);
+    border-top: var(--fio-grosso) solid var(--tinta);
+    padding-top: 20px;
+  }
+
+  .campo {
+    flex: 1;
+    min-width: 0;
+    border: var(--fio-fino) solid var(--cinza-rotulo);
+    border-radius: 0;
+    background: var(--papel);
+    font-family: var(--serif-texto);
+    font-size: 1.0625rem;
+    color: var(--tinta);
+    padding: 12px 14px;
+    -webkit-appearance: none;
+  }
+
+  .campo:focus-visible {
+    outline: 2px solid var(--azul);
+    outline-offset: 1px;
+    border-color: var(--azul);
+  }
+
+  .botao {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    background: var(--azul);
+    color: var(--papel);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    cursor: pointer;
+  }
+
+  .botao:hover,
+  .botao:focus-visible {
+    background: var(--azul-escuro);
+  }
+
+  .lupa {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .estado {
+    margin-top: 14px;
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--cinza-rotulo);
+    max-width: var(--max-manchete);
+  }
+
+  .estado:empty {
+    display: none;
+  }
+
+  .resultados {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    max-width: var(--max-manchete);
+  }
+
+  .resultados :global(li) {
+    border-bottom: var(--fio-fino) solid var(--fio);
+    padding: 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .resultados :global(.kicker-resultado) {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.5625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--azul);
+  }
+
+  .resultados :global(a) {
+    font-family: var(--serif-titulo);
+    font-weight: 700;
+    font-size: var(--t-titulo-3);
+    line-height: 1.3;
+    color: var(--tinta);
+  }
+
+  .resultados :global(a:hover),
+  .resultados :global(a:focus-visible) {
+    color: var(--azul);
+    text-decoration: none;
+  }
+
+  .resultados :global(.trecho) {
+    font-family: var(--serif-texto);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--cinza-texto);
+  }
+
+  .resultados :global(mark) {
+    background: var(--azul-papel);
+    color: var(--azul);
+    font-weight: 700;
+    padding: 0 2px;
+  }
+
+  .resultados :global(.data-resultado) {
+    font-family: var(--sans);
+    font-size: 0.6875rem;
+    color: var(--cinza-rotulo);
+  }
+
+  @media (max-width: 540px) {
+    .formulario {
+      flex-direction: column;
+    }
+
+    .botao {
+      justify-content: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  // JS puro, fora do empacotador: o import() dinâmico do Pagefind precisa
+  // chegar intacto ao navegador (o Vite tentaria reescrevê-lo e quebraria).
+  (function () {
+    var formulario = document.querySelector('[data-busca]');
+    var campo = document.getElementById('campo-busca');
+    var estado = document.getElementById('estado-busca');
+    var lista = document.getElementById('resultados-busca');
+    if (!formulario || !campo || !lista) return;
+
+    var pagefind = null;
+    var carregando = null;
+
+    function dizer(texto) {
+      if (estado) estado.textContent = texto;
+    }
+
+    function carregarPagefind() {
+      if (pagefind) return Promise.resolve(pagefind);
+      if (!carregando) {
+        var src = formulario.getAttribute('data-pagefind-src') || '/pagefind/pagefind.js';
+        carregando = import(src)
+          .then(function (mod) {
+            pagefind = mod;
+            return pagefind;
+          })
+          .catch(function () {
+            dizer(
+              'O índice da busca ainda não existe neste ambiente — ele é gerado na publicação do site. ' +
+                'Na prévia local, rode `npm run build && npm run preview`.'
+            );
+            return null;
+          });
+      }
+      return carregando;
+    }
+
+    // As URLs do índice são relativas à raiz do site; devolvemos com o /enseadas.
+    function comBase(url) {
+      var base = (formulario.getAttribute('data-base') || '/').replace(/\/$/, '');
+      return url.indexOf(base + '/') === 0 ? url : base + url;
+    }
+
+    function montarResultado(d) {
+      var li = document.createElement('li');
+
+      if (d.meta && d.meta.kicker) {
+        var kicker = document.createElement('p');
+        kicker.className = 'kicker-resultado';
+        kicker.textContent = d.meta.kicker;
+        li.appendChild(kicker);
+      }
+
+      var link = document.createElement('a');
+      link.href = comBase(d.url);
+      link.textContent = (d.meta && d.meta.title) || 'Sem título';
+      li.appendChild(link);
+
+      var trecho = document.createElement('p');
+      trecho.className = 'trecho';
+      // O excerpt vem do índice gerado no nosso próprio build, com <mark> nos termos.
+      trecho.innerHTML = d.excerpt;
+      li.appendChild(trecho);
+
+      if (d.meta && d.meta.data) {
+        var quando = document.createElement('p');
+        quando.className = 'data-resultado';
+        quando.textContent = d.meta.data;
+        li.appendChild(quando);
+      }
+
+      return li;
+    }
+
+    function buscar(termo) {
+      var limpo = termo.trim();
+      history.replaceState(
+        null,
+        '',
+        limpo ? '?q=' + encodeURIComponent(limpo) : location.pathname
+      );
+
+      if (limpo.length < 2) {
+        lista.textContent = '';
+        dizer('');
+        return;
+      }
+
+      carregarPagefind().then(function (motor) {
+        if (!motor) return;
+        dizer('Procurando…');
+
+        motor.search(limpo).then(function (resposta) {
+          lista.textContent = '';
+          var resultados = resposta.results || [];
+
+          if (resultados.length === 0) {
+            dizer('Nada encontrado para “' + limpo + '”. Tente outra palavra.');
+            return;
+          }
+
+          dizer(
+            resultados.length === 1
+              ? '1 resultado para “' + limpo + '”'
+              : resultados.length + ' resultados para “' + limpo + '”'
+          );
+
+          Promise.all(
+            resultados.slice(0, 30).map(function (r) {
+              return r.data();
+            })
+          ).then(function (dados) {
+            lista.textContent = '';
+            dados.forEach(function (d) {
+              lista.appendChild(montarResultado(d));
+            });
+          });
+        });
+      });
+    }
+
+    var temporizador;
+
+    formulario.addEventListener('submit', function (evento) {
+      evento.preventDefault();
+      buscar(campo.value);
+    });
+
+    campo.addEventListener('input', function () {
+      clearTimeout(temporizador);
+      temporizador = setTimeout(function () {
+        buscar(campo.value);
+      }, 300);
+    });
+
+    // Chegou com ?q= (link compartilhado ou volta do histórico): busca direto.
+    var inicial = new URLSearchParams(location.search).get('q');
+    if (inicial) {
+      campo.value = inicial;
+      buscar(inicial);
+    }
+
+    campo.focus();
+  })();
+</script>

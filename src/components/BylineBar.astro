@@ -26,7 +26,10 @@ const itens = [
       <>
         {i > 0 && <span class="ponto" aria-hidden="true" />}
         {i === 1 ? (
-          <time datetime={instante(data).toISOString()}>{item}</time>
+          /* data-pagefind-meta: a busca captura a data exibida aqui */
+          <time datetime={instante(data).toISOString()} data-pagefind-meta="data">
+            {item}
+          </time>
         ) : (
           <span>{item}</span>
         )}

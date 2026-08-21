@@ -84,8 +84,8 @@ const jsonLd = [
 
     <main id="conteudo">
       <div class="grade">
-        <article class="opiniao">
-          <p class="kicker linha-kicker">
+        <article class="opiniao" data-pagefind-body data-pagefind-meta="kicker:Opinião · Editorial">
+          <p class="kicker linha-kicker" data-pagefind-ignore>
             <span>Opinião · Editorial</span>
             <span class="risco" aria-hidden="true"></span>
             {ehRascunho(editorial) && <BadgeRascunho />}
@@ -103,7 +103,7 @@ const jsonLd = [
             <div>
               <p class="conselho">{SITE.autorPadrao}</p>
               <p class="rotulo">Direção editorial</p>
-              <p class="rotulo local">
+              <p class="rotulo local" data-pagefind-meta="data">
                 {SITE.cidadeSede}, {mesAno(edicao.data.dataFechamento)} · Edição Nº {
                   numeroEdicao(edicao.data.numero)
                 }

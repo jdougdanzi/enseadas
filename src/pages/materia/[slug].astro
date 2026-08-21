@@ -18,6 +18,7 @@ import {
   getRelacionadas,
   leituraMin,
   ehRascunho,
+  kicker,
   type Materia,
 } from '../../lib/conteudo';
 import { getCaderno } from '../../data/cadernos';
@@ -96,9 +97,11 @@ const jsonLd = [
     <HeaderCompacto data={materia.data.data} ativo={materia.data.caderno} />
 
     <main id="conteudo">
-      <article>
+      <!-- data-pagefind-body: só o que está aqui dentro entra no índice da busca. -->
+      <article data-pagefind-body data-pagefind-meta={`kicker:${kicker(materia)}`}>
         <header class="cabeca">
-          <p class="kicker">
+          <!-- O kicker já vai à busca como metadado; no corpo, só sujaria os trechos. -->
+          <p class="kicker" data-pagefind-ignore>
             {
               caderno ? (
                 <a href={rotas.caderno(caderno.slug)}>{caderno.nome}</a>

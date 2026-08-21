@@ -25,7 +25,15 @@ const assuntoCarta = `Sobre a matéria: ${titulo}`;
 const linkCarta = `mailto:${SITE.emailCartas}?subject=${encodeURIComponent(assuntoCarta)}`;
 ---
 
-<section class="barra" aria-labelledby="barra-titulo" data-barra-leitor data-url={url} data-titulo={titulo}>
+<!-- data-pagefind-ignore: texto de interface repetido não entra no índice da busca. -->
+<section
+  class="barra"
+  aria-labelledby="barra-titulo"
+  data-barra-leitor
+  data-pagefind-ignore
+  data-url={url}
+  data-titulo={titulo}
+>
   <h2 class="apenas-leitores" id="barra-titulo">O que fazer com esta matéria</h2>
 
   <a class="convite" href={linkCarta}>Mande sua carta sobre esta matéria</a>

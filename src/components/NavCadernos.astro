@@ -34,6 +34,15 @@ const { ativo = '', compacta = false } = Astro.props;
         </li>
       ))
     }
+    <li class="item-busca">
+      <a href={rotas.busca()} aria-current={ativo === 'busca' ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="lupa">
+          <circle cx="10.5" cy="10.5" r="6"></circle>
+          <path d="M15 15l5.5 5.5"></path>
+        </svg>
+        Busca
+      </a>
+    </li>
   </ul>
 </nav>
 
@@ -90,6 +99,21 @@ const { ativo = '', compacta = false } = Astro.props;
   .lista a[aria-current='page'] {
     color: var(--azul);
     border-bottom-color: var(--azul);
+  }
+
+  .item-busca a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .lupa {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
   }
 
   @media (max-width: 720px) {
