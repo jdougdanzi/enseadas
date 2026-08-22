@@ -1,5 +1,0 @@
-{% autoescape off %}{% block content %}{% endblock %}
-—
-EnseadaS · Diário de Boas Notícias · Espírito Santo
-Se você não pediu esta mensagem, pode ignorá-la: nada acontece sem a sua confirmação.
-{% endautoescape %}

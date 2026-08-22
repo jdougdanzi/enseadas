@@ -24,12 +24,13 @@ redacao/pautas/*.md
 # cópia de trabalho da branch gh-pages (deploy)
 .gh-pages/
 
-# Backend (Django)
 # Repositório público: qualquer variante de .env fica de fora — só o exemplo entra.
 .env*
 !.env.example
-backend/.venv/
-backend/staticfiles/
+
+# O backend vive em repositório PRIVADO próprio (jdougdanzi/enseadas-backend),
+# clonado aqui dentro para o Claude Code operar as duas partes de um lugar só.
+backend/
 __pycache__/
 *.py[cod]
 .pytest_cache/

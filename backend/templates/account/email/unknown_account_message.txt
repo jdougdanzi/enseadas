@@ -1,7 +1,0 @@
-{% extends "account/email/base_message.txt" %}{% block content %}Olá!
-
-Recebemos um pedido de nova senha para este endereço, mas não há conta de leitor
-na EnseadaS com ele.
-
-Se foi você quem pediu, talvez tenha se cadastrado com outro e-mail — ou ainda
-não tenha conta. Criar é rápido: {{ signup_url }}{% endblock %}

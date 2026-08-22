@@ -233,9 +233,22 @@ ajuste o bloco `foto:` no markdown — `credito` com o seu nome, `licenca: 'Arqu
 
 ## Backend (API da revista)
 
-A revista continua estática e gratuita no GitHub Pages. O backend em `backend/`
-(Django 5.2 + PostgreSQL 17) serve **só o que precisa de servidor**: contas de leitor,
-comentários, newsletter. Plano completo e fases em [docs/backend-plano.md](docs/backend-plano.md).
+A revista continua estática e gratuita no GitHub Pages. O backend serve **só o que
+precisa de servidor**: contas de leitor, comentários, newsletter. Plano completo e
+fases em [docs/backend-plano.md](docs/backend-plano.md).
+
+> **O backend vive em outro repositório, privado:** `jdougdanzi/enseadas-backend`.
+> Ele fica clonado em `backend/` aqui dentro (ignorado por este repositório), para
+> operar as duas partes de um lugar só. **São dois `git push`**: um para a revista,
+> outro, de dentro de `backend/`, para o backend.
+>
+> Se a pasta não existir num clone novo:
+> `git clone https://github.com/jdougdanzi/enseadas-backend.git backend`
+
+**Endereços (provisórios, até o enseadas.com.br):** site em `enseadas.bolgest.com`,
+API em `api.enseadas.bolgest.com`. Mesmo domínio registrável — é o que faz a sessão
+sobreviver no Safari do iPhone. Nenhum cookie leva `Domain`, então nada da revista
+chega às outras aplicações do bolgest.com.
 
 ```bash
 npm run api          # sobe a API em http://localhost:8000
