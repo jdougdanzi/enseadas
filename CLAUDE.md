@@ -226,3 +226,45 @@ ajuste o bloco `foto:` no markdown — `credito` com o seu nome, `licenca: 'Arqu
    e colar em `GA_MEASUREMENT_ID`. O script só é injetado no build de produção; em dev nunca.
    Com o ID vazio, nenhum analytics é carregado e a página de privacidade se ajusta sozinha.
 3. Ambos exigem login na conta Google do Douglas — quem faz é ele, não o Claude.
+
+---
+
+## Backend (API da revista)
+
+A revista continua estática e gratuita no GitHub Pages. O backend em `backend/`
+(Django 5.2 + PostgreSQL 17) serve **só o que precisa de servidor**: contas de leitor,
+comentários, newsletter. Plano completo e fases em [docs/backend-plano.md](docs/backend-plano.md).
+
+```bash
+npm run api          # sobe a API em http://localhost:8000
+npm run api:test     # testes (pytest)
+npm run api:check    # checagem do Django
+```
+
+**Antes de tudo, o Postgres precisa estar de pé:**
+
+```bash
+LC_ALL=C /opt/homebrew/opt/postgresql@17/bin/pg_ctl -D /opt/homebrew/var/postgresql@17 -l /opt/homebrew/var/log/postgresql@17.log start
+```
+
+O `LC_ALL=C` não é opcional: sem ele o PostgreSQL 17 no macOS morre no arranque com
+*"postmaster became multithreaded during startup"*. Use sempre o **17** — o 14 também
+está instalado e não é o nosso.
+
+| Onde | O quê |
+|---|---|
+| `backend/config/settings/` | `base` (comum), `dev` (Mac), `prod` (VPS), `test` |
+| `backend/contas/` | leitor: login por e-mail, sem nome de usuário |
+| `backend/redacao/` | o painel: admin do Django em **`/redacao/`** (o `/admin/` não existe) |
+| `backend/templates/account/email/` | e-mails de conta, em português, com a voz da revista |
+| `/api/saude` · `/api/csrf` | saúde (deploy) · cookie CSRF (site) |
+| `/_allauth/browser/v1/…` | cadastro, login, verificação, nova senha — só JSON |
+
+### Regras duras do backend
+
+8. **Dados de leitor são sagrados.** Nunca liste, exporte ou cole e-mails de leitores em
+   conversa, commit ou prévia sem finalidade explícita do Douglas. Exclusão de conta só
+   pelos comandos previstos.
+9. **`.env` nunca entra no git** (o repositório é público). Migração que apaga coluna ou
+   tabela exige backup imediatamente antes e o "sim" do Douglas.
+10. **Nunca `docker compose down -v`** no VPS: o `-v` apaga o volume do banco.
