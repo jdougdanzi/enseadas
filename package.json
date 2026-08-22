@@ -14,7 +14,10 @@
     "foto": "node scripts/wikimedia.mjs",
     "proxima-sexta": "node scripts/proxima-sexta.mjs",
     "publicar-site": "node scripts/publicar-site.mjs",
-    "imagens": "node scripts/gerar-og.mjs"
+    "imagens": "node scripts/gerar-og.mjs",
+    "api": "uv run --directory backend manage.py runserver 8000",
+    "api:test": "uv run --directory backend pytest",
+    "api:check": "uv run --directory backend manage.py check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

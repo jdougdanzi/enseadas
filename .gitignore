@@ -23,3 +23,12 @@ redacao/pautas/*.md
 
 # cópia de trabalho da branch gh-pages (deploy)
 .gh-pages/
+
+# Backend (Django)
+backend/.env
+backend/.venv/
+backend/staticfiles/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
