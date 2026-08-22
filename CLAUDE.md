@@ -239,9 +239,14 @@ comentários, newsletter. Plano completo e fases em [docs/backend-plano.md](docs
 
 ```bash
 npm run api          # sobe a API em http://localhost:8000
-npm run api:test     # testes (pytest)
-npm run api:check    # checagem do Django
+npm run api:test     # testes (pytest) — funcionam sem .env
+npm run api:check    # checagem do Django (acusa tabela de cache ausente)
 ```
+
+**Primeira vez neste banco:** `manage.py migrate` **e** `manage.py createcachetable`.
+A segunda não é opcional: o allauth consulta o cache no limite de tentativas de
+todo login e cadastro, e sem a tabela o primeiro leitor recebe 500. O
+`npm run api:check` acusa isso antes.
 
 **Antes de tudo, o Postgres precisa estar de pé:**
 

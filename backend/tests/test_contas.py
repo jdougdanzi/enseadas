@@ -121,3 +121,55 @@ def test_pedido_de_nova_senha_manda_e_mail_com_link_do_site(client, leitor, sett
     corpo = mail.outbox[0].body
     assert f"{settings.SITE_URL}/conta/redefinir/" in corpo
     assert "testserver" not in corpo
+
+
+@pytest.mark.django_db
+def test_recadastro_de_e_mail_existente_fala_como_a_revista(client, leitor):
+    """
+    Com a prevenção de enumeração ligada, quem tenta se cadastrar de novo
+    recebe um aviso de conta existente — que estava saindo no texto padrão
+    do allauth, sem a voz da revista.
+    """
+    from django.core.cache import cache
+
+    cache.clear()  # o allauth tem carência de reenvio por endereço
+    resposta = post(
+        client,
+        f"{BROWSER}/auth/signup",
+        {
+            "email": leitor.email,
+            "password": "outra-senha-boa-456",
+        },
+    )
+
+    # A resposta é idêntica à de um cadastro novo: é isso que impede
+    # descobrir quem já tem conta.
+    assert resposta.status_code == 401
+    mensagem = mail.outbox[0]
+    assert "EnseadaS" in mensagem.subject
+    assert "EnseadaS" in mensagem.body
+
+
+@pytest.mark.django_db
+def test_confirmar_o_e_mail_ja_deixa_o_leitor_logado(client):
+    """
+    Quem clica no link de confirmação espera estar dentro. Sem isto, a página
+    diz 'confirmado' e o leitor continua deslogado, sem entender por quê.
+    """
+    import re
+    from urllib.parse import unquote
+
+    post(
+        client,
+        f"{BROWSER}/auth/signup",
+        {
+            "email": "novo@exemplo.com.br",
+            "password": "uma-senha-boa-123",
+        },
+    )
+    chave = unquote(re.search(r"\?key=([^\s]+)", mail.outbox[0].body).group(1))
+
+    confirmacao = post(client, f"{BROWSER}/auth/email/verify", {"key": chave})
+
+    assert confirmacao.status_code == 200, "confirmar não abriu a sessão"
+    assert client.get(f"{BROWSER}/auth/session").status_code == 200

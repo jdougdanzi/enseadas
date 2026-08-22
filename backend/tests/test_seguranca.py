@@ -45,3 +45,28 @@ def test_origem_do_site_recebe_cors_com_credenciais(client, settings):
 
     assert resposta["Access-Control-Allow-Origin"] == origem
     assert resposta["Access-Control-Allow-Credentials"] == "true"
+
+
+@pytest.mark.django_db
+def test_esquema_da_api_nao_fica_publico_em_producao():
+    """
+    docs_url=None escondia só a página; o /openapi.json continuava aberto,
+    publicando cada rota nova automaticamente.
+    """
+    from ninja import NinjaAPI
+
+    # Reproduz o construtor de config/api.py com DEBUG desligado.
+    api = NinjaAPI(title="teste", docs_url=None, openapi_url=None)
+    rotas = [str(p.pattern) for p in api.urls[0]]
+
+    assert not any("openapi" in r for r in rotas), f"esquema exposto: {rotas}"
+
+
+@pytest.mark.django_db
+def test_api_real_nao_expoe_o_esquema_quando_debug_esta_desligado(client, settings):
+    from config.api import api
+
+    if settings.DEBUG:
+        pytest.skip("em dev o esquema é útil e fica disponível")
+    rotas = [str(p.pattern) for p in api.urls[0]]
+    assert not any("openapi" in r for r in rotas), f"esquema exposto: {rotas}"

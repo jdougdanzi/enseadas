@@ -18,7 +18,12 @@ api = NinjaAPI(
     version="1.0.0",
     description="Contas, comentários e newsletter da revista.",
     auth=django_auth,
+    # Em produção o esquema não vai ao ar: `docs_url=None` esconderia só a
+    # página, mas o /openapi.json continuaria aberto — publicando cada rota
+    # nova (contas, comentários, newsletter) para qualquer um, sem ninguém
+    # precisar lembrar disso.
     docs_url="/docs" if settings.DEBUG else None,
+    openapi_url="/openapi.json" if settings.DEBUG else None,
 )
 
 

@@ -25,7 +25,9 @@ redacao/pautas/*.md
 .gh-pages/
 
 # Backend (Django)
-backend/.env
+# Repositório público: qualquer variante de .env fica de fora — só o exemplo entra.
+.env*
+!.env.example
 backend/.venv/
 backend/staticfiles/
 __pycache__/

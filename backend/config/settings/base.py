@@ -21,11 +21,15 @@ DATABASES = {"default": env.db("DATABASE_URL")}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Endereços do site que consome esta API (origem exata, sem barra final).
+# Defaults de desenvolvimento. Em produção, prod.py recusa subir com eles
+# — senão os e-mails sairiam com link para localhost e o site real seria
+# recusado por CORS, sem nenhum aviso.
 SITE_URL = env("SITE_URL", default="http://localhost:4321")
 ORIGENS_SITE = env.list("ORIGENS_SITE", default=["http://localhost:4321"])
 
 INSTALLED_APPS = [
     "redacao.apps.RedacaoAdminConfig",  # substitui o admin padrão
+    "redacao.apps.RedacaoConfig",  # templates e static do painel
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -90,8 +94,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Só o backend do allauth: ele herda do ModelBackend e, com login por
+# e-mail, também atende o formulário do painel. Com os dois na lista, cada
+# senha errada custava dois cálculos de Argon2 (70 ms e 200 MiB por tentativa).
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
@@ -144,6 +150,13 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {"simples": {"format": "{levelname} {asctime} {name} {message}", "style": "{"}},
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simples"}},
+    "loggers": {
+        # O Django registra todo 4xx como WARNING. O allauth responde 401 para
+        # cada visita anônima que pergunta se há sessão — e para um cadastro
+        # bem-sucedido com verificação pendente. Sem isto, o log de produção
+        # vira ruído e expulsa os erros de verdade da janela de rotação.
+        "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
+    },
     "root": {"handlers": ["console"], "level": "INFO"},
 }
 
@@ -161,8 +174,12 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
 
 # Ninguém comenta sem confirmar o e-mail: é o que segura robô e e-mail alheio.
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# Quem clica no link de confirmação já entra: sem isto a página diria
+# "confirmado" e o leitor continuaria deslogado, sem entender por quê.
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 ACCOUNT_PREVENT_ENUMERATION = True
+ACCOUNT_USER_DISPLAY = "contas.adapter.exibir_leitor"
 
 HEADLESS_ONLY = True
 HEADLESS_CLIENTS = ("browser",)
