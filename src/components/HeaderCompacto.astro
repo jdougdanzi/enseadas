@@ -89,6 +89,15 @@ const { data, ativo = '' } = Astro.props;
     text-transform: uppercase;
   }
 
+  /* Tela baixa (celular deitado): grudado, o cabeçalho de duas linhas comia
+     23% da altura. Ali ele vira uma linha só — a navegação volta ao rolar
+     para cima, que é o gesto natural de quem quer sair da matéria. */
+  @media (max-height: 520px) {
+    .cabecalho[data-fixa] .cadernos {
+      display: none;
+    }
+  }
+
   @media (max-width: 900px) {
     .cabecalho {
       flex-wrap: wrap;

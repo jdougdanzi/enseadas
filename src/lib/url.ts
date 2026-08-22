@@ -27,8 +27,10 @@ export function href(caminho: string): string {
   const limpo = caminho.replace(/^\/+/, '');
   if (limpo === '') return BASE;
 
-  // Arquivos (feed.xml, sitemap-index.xml, og-padrao.png) não levam barra final.
-  const ehArquivo = /\.[a-z0-9]{2,5}$/i.test(limpo);
+  // Arquivos (feed.xml, og-padrao.png, manifest.webmanifest) não levam barra
+  // final. Sem limite de tamanho na extensão: com {2,5} o ".webmanifest"
+  // escapava e virava um 404 em todas as páginas. Rotas nossas nunca têm ponto.
+  const ehArquivo = /\.[a-z0-9]{2,}$/i.test(limpo);
   const comBarra = ehArquivo || limpo.endsWith('/') ? limpo : `${limpo}/`;
   return `${BASE}${comBarra}`;
 }

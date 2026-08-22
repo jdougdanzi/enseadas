@@ -70,7 +70,11 @@ const analiseAtiva = import.meta.env.PROD && GA_MEASUREMENT_ID !== '';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
-    <link rel="canonical" href={canonical} />
+    {
+      /* Canônica só em página indexável: combiná-la com noindex manda sinais
+         conflitantes ao buscador — e na 404 apontaria para uma URL que não existe. */
+      !semIndexacao && <link rel="canonical" href={canonical} />
+    }
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#2B4FC7" />
 

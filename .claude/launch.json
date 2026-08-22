@@ -4,9 +4,26 @@
     {
       "name": "enseadas",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 4321,
       "url": "http://localhost:4321"
+    },
+    {
+      "name": "api",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "--directory",
+        "backend",
+        "manage.py",
+        "runserver",
+        "8000"
+      ],
+      "port": 8000,
+      "url": "http://localhost:8000"
     }
   ]
 }

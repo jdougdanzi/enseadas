@@ -81,7 +81,7 @@ const descricao = `Tudo o que a EnseadaS publicou sobre ${assunto.rotulo} no Esp
 
   .grade {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 30px var(--calha);
     border-top: var(--fio-fino) solid var(--tinta);
     padding-top: 26px;

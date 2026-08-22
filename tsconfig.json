@@ -1,5 +1,15 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", "Revista Enseadas logo concepts"]
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "Revista Enseadas logo concepts",
+    "backend",
+    ".venv",
+    "docs"
+  ]
 }

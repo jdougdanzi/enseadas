@@ -32,6 +32,8 @@ npm run foto "termo de busca"        # procura foto livre no Wikimedia Commons
 npm run proxima-sexta -- --status    # panorama das edições
 npm run publicar-site -- "Edição 001" # envia o dist/ para o ar (só dentro do /publicar)
 npm run imagens                      # regera og-padrao.png e apple-touch-icon.png
+npm run links                        # confere links quebrados no dist/ (roda no /publicar)
+npm run links -- --externos          # confere também as URLs das fontes
 ```
 
 ## Busca interna

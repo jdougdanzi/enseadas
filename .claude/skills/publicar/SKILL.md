@@ -25,6 +25,7 @@ Mude `status: publicada` em `src/content/edicoes/NNN.yaml` e rode:
 
 ```bash
 npm run build
+npm run links                   # nenhum link pode estar quebrado
 ```
 
 O build de produção é o que corta rascunhos e conteúdo de exemplo. Se falhar, reverta o

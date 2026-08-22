@@ -17,7 +17,8 @@
     "imagens": "node scripts/gerar-og.mjs",
     "api": "uv run --directory backend manage.py runserver 8000",
     "api:test": "uv run --directory backend pytest",
-    "api:check": "uv run --directory backend manage.py check"
+    "api:check": "uv run --directory backend manage.py check",
+    "links": "node scripts/verificar-links.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
