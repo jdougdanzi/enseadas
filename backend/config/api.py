@@ -8,8 +8,8 @@ Endpoints públicos declaram `auth=None` explicitamente.
 
 from django.conf import settings
 from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from django.utils import timezone
-from django.views.decorators.csrf import ensure_csrf_cookie
 from ninja import NinjaAPI, Schema
 from ninja.security import django_auth
 
@@ -40,7 +40,13 @@ def saude(request):
 
 
 @api.get("/csrf", auth=None, tags=["serviço"])
-@ensure_csrf_cookie
 def csrf(request):
-    """Garante o cookie csrftoken para o site poder mandar o cabeçalho."""
-    return JsonResponse({"ok": True})
+    """
+    Entrega o token CSRF para o site.
+
+    O valor vai no corpo, não só no cookie: site e API ficam em hosts
+    diferentes, então o script do site não consegue ler o cookie da API. Com o
+    token no corpo, o cookie continua restrito ao host da API — sem precisar
+    espalhá-lo pelo domínio inteiro, onde outras aplicações o receberiam.
+    """
+    return JsonResponse({"token": get_token(request)})

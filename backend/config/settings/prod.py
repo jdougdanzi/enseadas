@@ -76,8 +76,9 @@ if _dominio_site != _dominio_api:
 # subdomínio — inclusive o GitHub Pages, que serve as páginas.
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-# O CSRF precisa do domínio: é o script do site que lê este cookie.
-CSRF_COOKIE_DOMAIN = f".{_dominio_api}"
+# Nenhum cookie leva Domain: os dois ficam restritos ao host da API. O site
+# obtém o token CSRF pelo corpo de /api/csrf, então não precisa lê-lo — e
+# nada do leitor é enviado a outras aplicações do mesmo domínio.
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = True
